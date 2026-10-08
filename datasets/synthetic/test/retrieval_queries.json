@@ -1,0 +1,90 @@
+[
+ {
+  "query": "Did a red car enter the main gate?",
+  "filters": {
+   "object_type": "vehicle",
+   "color": "red",
+   "camera_id": "CAM-01",
+   "event_type": "Entry"
+  },
+  "relevant_event_ids": [
+   "EV-0914"
+  ]
+ },
+ {
+  "query": "Find a person carrying a large black bag.",
+  "filters": {
+   "object_type": "person",
+   "tag": "bag"
+  },
+  "relevant_event_ids": [
+   "EV-1019",
+   "EV-1020",
+   "EV-1021",
+   "EV-1022"
+  ]
+ },
+ {
+  "query": "Show people entering the restricted zone.",
+  "filters": {
+   "object_type": "person",
+   "zone": "Restricted Zone"
+  },
+  "relevant_event_ids": [
+   "EV-1003",
+   "EV-1022"
+  ]
+ },
+ {
+  "query": "Show all vehicles that entered.",
+  "filters": {
+   "object_type": "vehicle",
+   "event_type": "Entry"
+  },
+  "relevant_event_ids": [
+   "EV-1005",
+   "EV-0914"
+  ]
+ },
+ {
+  "query": "Anyone loitering?",
+  "filters": {
+   "event_type": "Loitering"
+  },
+  "relevant_event_ids": [
+   "EV-1007"
+  ]
+ },
+ {
+  "query": "Any bag left behind?",
+  "filters": {
+   "event_type": "Object Left"
+  },
+  "relevant_event_ids": [
+   "EV-1017"
+  ]
+ },
+ {
+  "query": "Black vehicles that exited.",
+  "filters": {
+   "object_type": "vehicle",
+   "color": "black",
+   "event_type": "Exit"
+  },
+  "relevant_event_ids": [
+   "EV-1009",
+   "EV-1023"
+  ]
+ },
+ {
+  "query": "What did CAM-02 see?",
+  "filters": {
+   "camera_id": "CAM-02"
+  },
+  "relevant_event_ids": [
+   "EV-1005",
+   "EV-1015",
+   "EV-1018"
+  ]
+ }
+]

@@ -1,0 +1,806 @@
+{
+ "EVENTS0": [
+  {
+   "event_id": "EV-1001",
+   "camera_id": "CAM-03",
+   "t": 31272,
+   "ms": 562,
+   "event_type": "Person detected",
+   "zone": null,
+   "object_type": "person",
+   "color": "grey",
+   "confidence": 91,
+   "label": "Person",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 363,
+    "y": 159,
+    "w": 71,
+    "h": 170
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1002",
+   "camera_id": "CAM-01",
+   "t": 31407,
+   "ms": 67,
+   "event_type": "Vehicle detected",
+   "zone": null,
+   "object_type": "car",
+   "color": "white",
+   "confidence": 89,
+   "label": "White Sedan",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 86,
+    "y": 239,
+    "w": 154,
+    "h": 106
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1003",
+   "camera_id": "CAM-06",
+   "t": 31502,
+   "ms": 448,
+   "event_type": "Restricted Zone Entry",
+   "zone": "Restricted Zone",
+   "object_type": "person",
+   "color": "grey",
+   "confidence": 92,
+   "label": "Person",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 330,
+    "y": 150,
+    "w": 72,
+    "h": 172
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1004",
+   "camera_id": "CAM-01",
+   "t": 31578,
+   "ms": 32,
+   "event_type": "Vehicle detected",
+   "zone": null,
+   "object_type": "car",
+   "color": "red",
+   "confidence": 90,
+   "label": "Red Hatchback",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 54,
+    "y": 245,
+    "w": 150,
+    "h": 103
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1005",
+   "camera_id": "CAM-02",
+   "t": 31960,
+   "ms": 414,
+   "event_type": "Entry",
+   "zone": "Parking Area",
+   "object_type": "car",
+   "color": "blue",
+   "confidence": 88,
+   "label": "Blue SUV",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 238,
+    "y": 219,
+    "w": 167,
+    "h": 115
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1006",
+   "camera_id": "CAM-04",
+   "t": 32289,
+   "ms": 360,
+   "event_type": "Person detected",
+   "zone": null,
+   "object_type": "person",
+   "color": "black",
+   "confidence": 87,
+   "label": "Person",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 248,
+    "y": 173,
+    "w": 68,
+    "h": 163
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1007",
+   "camera_id": "CAM-05",
+   "t": 32535,
+   "ms": 741,
+   "event_type": "Loitering",
+   "zone": null,
+   "object_type": "person",
+   "color": "grey",
+   "confidence": 85,
+   "label": "Person",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 447,
+    "y": 146,
+    "w": 74,
+    "h": 178
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1008",
+   "camera_id": "CAM-07",
+   "t": 32751,
+   "ms": 92,
+   "event_type": "Vehicle detected",
+   "zone": "Loading Area",
+   "object_type": "truck",
+   "color": "white",
+   "confidence": 90,
+   "label": "White Truck",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 97,
+    "y": 214,
+    "w": 200,
+    "h": 130
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1009",
+   "camera_id": "CAM-08",
+   "t": 32913,
+   "ms": 482,
+   "event_type": "Exit",
+   "zone": null,
+   "object_type": "car",
+   "color": "black",
+   "confidence": 91,
+   "label": "Black Sedan",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 242,
+    "y": 218,
+    "w": 168,
+    "h": 116
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-0914",
+   "camera_id": "CAM-01",
+   "t": 33272,
+   "ms": 420,
+   "event_type": "Entry",
+   "zone": null,
+   "object_type": "car",
+   "color": "red",
+   "confidence": 94,
+   "label": "Red Sedan",
+   "tags": [],
+   "track_id": "CAR-008",
+   "bbox": {
+    "x": 412,
+    "y": 218,
+    "w": 183,
+    "h": 126
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1012",
+   "camera_id": "CAM-03",
+   "t": 33365,
+   "ms": 420,
+   "event_type": "Vehicle detected",
+   "zone": null,
+   "object_type": "car",
+   "color": "red",
+   "confidence": 91,
+   "label": "Red Sedan",
+   "tags": [],
+   "track_id": "CAR-008",
+   "bbox": {
+    "x": 240,
+    "y": 219,
+    "w": 167,
+    "h": 115
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1013",
+   "camera_id": "CAM-05",
+   "t": 33560,
+   "ms": 38,
+   "event_type": "Vehicle detected",
+   "zone": null,
+   "object_type": "car",
+   "color": "red",
+   "confidence": 89,
+   "label": "Red Sedan",
+   "tags": [],
+   "track_id": "CAR-008",
+   "bbox": {
+    "x": 56,
+    "y": 244,
+    "w": 150,
+    "h": 103
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1014",
+   "camera_id": "CAM-08",
+   "t": 33731,
+   "ms": 599,
+   "event_type": "Exit",
+   "zone": null,
+   "object_type": "car",
+   "color": "red",
+   "confidence": 92,
+   "label": "Red Sedan",
+   "tags": [],
+   "track_id": "CAR-008",
+   "bbox": {
+    "x": 304,
+    "y": 209,
+    "w": 174,
+    "h": 120
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1015",
+   "camera_id": "CAM-02",
+   "t": 33870,
+   "ms": 668,
+   "event_type": "Person detected",
+   "zone": null,
+   "object_type": "person",
+   "color": "blue",
+   "confidence": 90,
+   "label": "Person",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 406,
+    "y": 152,
+    "w": 73,
+    "h": 175
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1016",
+   "camera_id": "CAM-06",
+   "t": 34064,
+   "ms": 263,
+   "event_type": "Crowd",
+   "zone": "Safe Zone",
+   "object_type": "person",
+   "color": "grey",
+   "confidence": 86,
+   "label": "Group of 5",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 209,
+    "y": 178,
+    "w": 67,
+    "h": 161
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1017",
+   "camera_id": "CAM-07",
+   "t": 34142,
+   "ms": 782,
+   "event_type": "Object Left",
+   "zone": "Loading Area",
+   "object_type": "bag",
+   "color": "black",
+   "confidence": 83,
+   "label": "Black Bag",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 456,
+    "y": 274,
+    "w": 58,
+    "h": 50
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1018",
+   "camera_id": "CAM-02",
+   "t": 71290,
+   "ms": 208,
+   "event_type": "Vehicle detected",
+   "zone": "Parking Area",
+   "object_type": "car",
+   "color": "white",
+   "confidence": 90,
+   "label": "White Sedan",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 125,
+    "y": 235,
+    "w": 157,
+    "h": 108
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1019",
+   "camera_id": "CAM-04",
+   "t": 71733,
+   "ms": 727,
+   "event_type": "Entry",
+   "zone": null,
+   "object_type": "person",
+   "color": "black",
+   "confidence": 88,
+   "label": "Person with black bag",
+   "tags": [
+    "bag"
+   ],
+   "track_id": "PER-114",
+   "bbox": {
+    "x": 407,
+    "y": 151,
+    "w": 73,
+    "h": 175
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1020",
+   "camera_id": "CAM-05",
+   "t": 71900,
+   "ms": 428,
+   "event_type": "Person detected",
+   "zone": null,
+   "object_type": "person",
+   "color": "black",
+   "confidence": 89,
+   "label": "Person with black bag",
+   "tags": [
+    "bag"
+   ],
+   "track_id": "PER-114",
+   "bbox": {
+    "x": 254,
+    "y": 173,
+    "w": 68,
+    "h": 163
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1021",
+   "camera_id": "CAM-03",
+   "t": 72192,
+   "ms": 818,
+   "event_type": "Person detected",
+   "zone": null,
+   "object_type": "person",
+   "color": "black",
+   "confidence": 91,
+   "label": "Person with black bag",
+   "tags": [
+    "bag"
+   ],
+   "track_id": "PER-114",
+   "bbox": {
+    "x": 457,
+    "y": 146,
+    "w": 74,
+    "h": 178
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1022",
+   "camera_id": "CAM-06",
+   "t": 73062,
+   "ms": 551,
+   "event_type": "Restricted Zone Entry",
+   "zone": "Restricted Zone",
+   "object_type": "person",
+   "color": "black",
+   "confidence": 93,
+   "label": "Person with black bag",
+   "tags": [
+    "bag"
+   ],
+   "track_id": "PER-114",
+   "bbox": {
+    "x": 330,
+    "y": 150,
+    "w": 72,
+    "h": 172
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1023",
+   "camera_id": "CAM-01",
+   "t": 73265,
+   "ms": 32,
+   "event_type": "Exit",
+   "zone": null,
+   "object_type": "car",
+   "color": "black",
+   "confidence": 90,
+   "label": "Black Sedan",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 57,
+    "y": 245,
+    "w": 150,
+    "h": 103
+   },
+   "evidence_url": null
+  },
+  {
+   "event_id": "EV-1024",
+   "camera_id": "CAM-08",
+   "t": 73488,
+   "ms": 585,
+   "event_type": "Exit",
+   "zone": null,
+   "object_type": "person",
+   "color": "grey",
+   "confidence": 89,
+   "label": "Person",
+   "tags": [],
+   "track_id": null,
+   "bbox": {
+    "x": 335,
+    "y": 161,
+    "w": 71,
+    "h": 170
+   },
+   "evidence_url": null
+  }
+ ],
+ "ALERTS0": [
+  {
+   "alert_id": "AL-001",
+   "rule": "Restricted Zone Entry",
+   "camera_id": "CAM-06",
+   "t": 73062,
+   "severity": "critical",
+   "confidence": 93,
+   "status": "Resolved",
+   "day": "today",
+   "event_id": "EV-1022",
+   "createdAt": 0
+  },
+  {
+   "alert_id": "AL-002",
+   "rule": "Red Vehicle",
+   "camera_id": "CAM-01",
+   "t": 33272,
+   "severity": "warning",
+   "confidence": 94,
+   "status": "Investigating",
+   "day": "today",
+   "event_id": "EV-0914",
+   "createdAt": 0
+  },
+  {
+   "alert_id": "AL-003",
+   "rule": "Object Left Behind",
+   "camera_id": "CAM-07",
+   "t": 34142,
+   "severity": "critical",
+   "confidence": 83,
+   "status": "New",
+   "day": "today",
+   "event_id": "EV-1017",
+   "createdAt": 0
+  },
+  {
+   "alert_id": "AL-004",
+   "rule": "Person Loitering",
+   "camera_id": "CAM-05",
+   "t": 32535,
+   "severity": "warning",
+   "confidence": 85,
+   "status": "Resolved",
+   "day": "yesterday",
+   "event_id": "EV-1007",
+   "createdAt": 0
+  },
+  {
+   "alert_id": "AL-005",
+   "rule": "Crowd Formation",
+   "camera_id": "CAM-06",
+   "t": 34064,
+   "severity": "warning",
+   "confidence": 86,
+   "status": "Resolved",
+   "day": "yesterday",
+   "event_id": "EV-1016",
+   "createdAt": 0
+  }
+ ],
+ "MEM0": [
+  {
+   "memory_id": "M1",
+   "key": "Parking Area",
+   "value": "CAM-02",
+   "camera_id": "CAM-02",
+   "zone": null,
+   "created_at": "2026-10-01"
+  },
+  {
+   "memory_id": "M2",
+   "key": "Lobby",
+   "value": "CAM-03",
+   "camera_id": "CAM-03",
+   "zone": null,
+   "created_at": "2026-10-01"
+  },
+  {
+   "memory_id": "M3",
+   "key": "Restricted Zone",
+   "value": "CAM-06",
+   "camera_id": "CAM-06",
+   "zone": "Restricted Zone",
+   "created_at": "2026-10-01"
+  },
+  {
+   "memory_id": "M4",
+   "key": "Loading Area",
+   "value": "CAM-07",
+   "camera_id": "CAM-07",
+   "zone": "Loading Zone",
+   "created_at": "2026-10-01"
+  }
+ ],
+ "CAMS0": [
+  {
+   "camera_id": "CAM-01",
+   "name": "Main Gate",
+   "location": "North perimeter",
+   "scene": "gate",
+   "fps": 25,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-02",
+   "name": "Parking Area",
+   "location": "East lot",
+   "scene": "parking",
+   "fps": 25,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-03",
+   "name": "Lobby",
+   "location": "Ground floor",
+   "scene": "lobby",
+   "fps": 30,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-04",
+   "name": "Rear Entrance",
+   "location": "West wing",
+   "scene": "rear",
+   "fps": 25,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-05",
+   "name": "Corridor",
+   "location": "Level 1",
+   "scene": "corridor",
+   "fps": 20,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-06",
+   "name": "Warehouse",
+   "location": "Block B",
+   "scene": "warehouse",
+   "fps": 25,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-07",
+   "name": "Loading Area",
+   "location": "Block B dock",
+   "scene": "loading",
+   "fps": 25,
+   "status": "online",
+   "last_update": "live"
+  },
+  {
+   "camera_id": "CAM-08",
+   "name": "Exit Gate",
+   "location": "South perimeter",
+   "scene": "exit",
+   "fps": 25,
+   "status": "online",
+   "last_update": "live"
+  }
+ ],
+ "ZONES0": [
+  {
+   "id": "Z1",
+   "camera_id": "CAM-06",
+   "name": "Safe Zone",
+   "type": "safe",
+   "pts": [
+    [
+     30,
+     120
+    ],
+    [
+     270,
+     120
+    ],
+    [
+     270,
+     340
+    ],
+    [
+     30,
+     340
+    ]
+   ],
+   "rule": "Log activity only."
+  },
+  {
+   "id": "Z2",
+   "camera_id": "CAM-06",
+   "name": "Restricted Zone",
+   "type": "restricted",
+   "pts": [
+    [
+     300,
+     90
+    ],
+    [
+     560,
+     90
+    ],
+    [
+     590,
+     330
+    ],
+    [
+     290,
+     330
+    ]
+   ],
+   "rule": "Alert when a person enters after 8 PM."
+  },
+  {
+   "id": "Z3",
+   "camera_id": "CAM-06",
+   "name": "Loading Zone",
+   "type": "loading",
+   "pts": [
+    [
+     580,
+     140
+    ],
+    [
+     630,
+     140
+    ],
+    [
+     630,
+     330
+    ],
+    [
+     600,
+     330
+    ]
+   ],
+   "rule": "Alert if a vehicle stays more than 10 minutes."
+  },
+  {
+   "id": "Z4",
+   "camera_id": "CAM-07",
+   "name": "Loading Zone",
+   "type": "loading",
+   "pts": [
+    [
+     40,
+     150
+    ],
+    [
+     600,
+     150
+    ],
+    [
+     620,
+     340
+    ],
+    [
+     20,
+     340
+    ]
+   ],
+   "rule": "Alert if an object is left behind."
+  },
+  {
+   "id": "Z5",
+   "camera_id": "CAM-02",
+   "name": "Parking Bays",
+   "type": "safe",
+   "pts": [
+    [
+     20,
+     130
+    ],
+    [
+     620,
+     130
+    ],
+    [
+     630,
+     340
+    ],
+    [
+     10,
+     340
+    ]
+   ],
+   "rule": "Log vehicle entry and exit."
+  }
+ ],
+ "TRACKS0": {
+  "CAR-008": {
+   "id": "CAR-008",
+   "label": "Red Sedan",
+   "kind": "vehicle",
+   "conf": 91
+  },
+  "PER-114": {
+   "id": "PER-114",
+   "label": "Person with black bag",
+   "kind": "person",
+   "conf": 88
+  }
+ }
+}

@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VisionGuard AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#060a12;--panel:rgba(15,23,41,.62);--panel2:rgba(24,36,62,.72);--line:rgba(130,170,230,.15);--line2:rgba(130,170,230,.30);
+--tx:#e7eef9;--mut:#8a9bb6;--dim:#5d6e8a;--cy:#22d3ee;--bl:#4f8cff;--ok:#34d399;--warn:#ffb020;--red:#ff5a4d;
+--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--sans:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font:14px/1.5 var(--sans);
+background-image:radial-gradient(1100px 560px at 85% -10%,rgba(34,211,238,.09),transparent 60%),radial-gradient(900px 520px at -10% 110%,rgba(79,140,255,.09),transparent 60%);background-attachment:fixed}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgba(130,170,230,.22);border-radius:8px}
+.mono{font-family:var(--mono)}
+.app{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:env(safe-area-inset-top,0px);height:100dvh;display:flex;flex-direction:column;padding:18px 12px 14px;border-right:1px solid var(--line);background:rgba(6,10,18,.82);backdrop-filter:blur(14px);z-index:40;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:4px 8px 18px}
+.logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cy),var(--bl));color:#031018}
+.brand b{font-weight:700;letter-spacing:.02em}
+.nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.nav button{display:flex;align-items:center;gap:11px;padding:9px 11px;border:1px solid transparent;border-radius:11px;background:none;color:var(--mut);text-align:left;position:relative}
+.nav button:hover{background:rgba(130,170,230,.07);color:var(--tx)}
+.nav button.on{background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(79,140,255,.05));border-color:var(--line2);color:var(--tx)}
+.nav .badge{margin-left:auto}
+.sidefoot{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:10px}
+.who{display:flex;gap:10px;align-items:center}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#0e2038);border:1px solid var(--line2);display:grid;place-items:center;color:var(--cy)}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;align-items:center;gap:10px;padding:10px 24px;border-bottom:1px solid var(--line);background:rgba(6,10,18,.78);backdrop-filter:blur(14px);flex-wrap:wrap}
+.top .sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line);border-radius:99px;background:var(--panel);font-size:12px;color:var(--mut);white-space:nowrap}
+.pill b{color:var(--tx);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(52,211,153,.6);flex:none}
+.dot.red{background:var(--red)}.dot.warn{background:var(--warn)}.dot.pulse{animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+.page{padding:24px;display:flex;flex-direction:column;gap:20px;max-width:1500px;width:100%}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
+h1{font-size:26px;font-weight:700}h2{font-size:17px}h3{font-size:14.5px}
+.sub{color:var(--mut);margin:4px 0 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.card.flat{box-shadow:none;border-radius:14px;background:rgba(10,16,30,.5)}
+.card.hot{border-color:rgba(255,90,77,.5);box-shadow:0 0 0 1px rgba(255,90,77,.2),0 10px 40px rgba(255,90,77,.12)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.row.sb{justify-content:space-between}
+.col{display:flex;flex-direction:column;gap:12px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.g6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:11px;border:1px solid var(--line2);background:rgba(130,170,230,.08);font-weight:500;font-size:13px;transition:background .15s,border-color .15s}
+.btn:hover{background:rgba(130,170,230,.16)}
+.btn.primary{background:linear-gradient(135deg,var(--cy),var(--bl));color:#03111a;border-color:transparent;font-weight:600}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{background:rgba(255,90,77,.14);border-color:rgba(255,90,77,.45);color:#ffb3ac}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:9px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.icon{padding:7px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;font-size:11.5px;border:1px solid var(--line);color:var(--mut);background:rgba(130,170,230,.06)}
+.chip.on{border-color:var(--cy);color:var(--cy);background:rgba(34,211,238,.1)}
+.chip.red{border-color:rgba(255,90,77,.5);color:#ff9d94;background:rgba(255,90,77,.1)}.chip.warn{border-color:rgba(255,176,32,.5);color:#ffd07a;background:rgba(255,176,32,.1)}.chip.ok{border-color:rgba(52,211,153,.45);color:#7ee8bd;background:rgba(52,211,153,.1)}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--red);color:#fff;font-size:11px;display:inline-grid;place-items:center;font-weight:600}
+.label{font-size:11.5px;color:var(--dim);letter-spacing:.04em}
+input,select,textarea{background:rgba(6,10,18,.7);border:1px solid var(--line2);border-radius:11px;padding:9px 12px;min-width:0}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+select{appearance:none;padding-right:28px;background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+select option{background:#0c1424}
+.field{display:flex;flex-direction:column;gap:5px;min-width:130px;flex:1}
+.stat{padding:16px;display:flex;flex-direction:column;gap:2px}
+.stat .n{font-size:28px;font-weight:700;font-family:var(--mono);letter-spacing:-.03em}
+.stat .l{color:var(--mut);font-size:12.5px}
+.stat.crit .n{color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-weight:500;color:var(--dim);text-align:left;font-size:11.5px;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid rgba(130,170,230,.08);vertical-align:middle}
+tr.clk:hover td{background:rgba(130,170,230,.05);cursor:pointer}
+.scroll-x{overflow-x:auto}
+/* camera frames */
+.frame{position:relative;aspect-ratio:16/9;background:#05080f;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.frame svg.scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.frame::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
+.hud{position:absolute;z-index:2;font-family:var(--mono);font-size:10.5px;text-shadow:0 1px 2px #000;color:#dff}
+.hud.tl{left:8px;top:6px}.hud.tr{right:8px;top:6px}.hud.bl{left:8px;bottom:6px}.hud.br{right:8px;bottom:6px}
+.live{display:inline-flex;gap:5px;align-items:center;color:#ff7468;font-weight:600}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.cam{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:16px;background:var(--panel);border:1px solid var(--line);cursor:pointer;transition:border-color .2s}
+.cam:hover{border-color:var(--line2)}
+.cam.alerting{border-color:var(--red);box-shadow:0 0 0 1px rgba(255,90,77,.35),0 0 32px rgba(255,90,77,.28);animation:alertGlow 1.3s infinite}
+@keyframes alertGlow{50%{box-shadow:0 0 0 1px rgba(255,90,77,.6),0 0 44px rgba(255,90,77,.45)}}
+.cam .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--mut)}
+.boot{position:absolute;inset:0;z-index:3;display:grid;place-items:center;background:#05080f;color:var(--mut);font-family:var(--mono);font-size:11px;text-align:center}
+.spin{width:18px;height:18px;border:2px solid var(--line2);border-top-color:var(--cy);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:14px;min-height:300px}
+.bub{max-width:min(760px,100%);padding:11px 14px;border-radius:16px;border:1px solid var(--line)}
+.bub.u{align-self:flex-end;background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(79,140,255,.2));border-color:var(--line2)}
+.bub.a{align-self:flex-start;background:var(--panel2);width:100%}
+.ask{display:flex;gap:8px;align-items:center;padding:8px;border-radius:18px;border:1px solid var(--line2);background:rgba(6,10,18,.8)}
+.ask input{flex:1;border:none;background:none;font-size:15px;padding:10px 8px}
+.ask:focus-within{border-color:var(--cy);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.ev{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:14px;padding:12px;border-radius:14px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.05);margin-top:10px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px}.kv span:nth-child(odd){color:var(--dim)}
+.trip{display:flex;gap:8px;flex-wrap:wrap}
+.trip>div{flex:1;min-width:120px;border:1px solid rgba(34,211,238,.4);border-radius:12px;padding:8px 10px;background:rgba(34,211,238,.07)}
+.trip small{display:block;font-size:10.5px;color:var(--dim);letter-spacing:.04em}
+.trip b{font-family:var(--mono);font-size:13px}
+.typing span{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:var(--cy);animation:blink 1s infinite}.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+/* modal + toasts */
+.veil{position:fixed;inset:0;z-index:80;background:rgba(2,5,10,.78);backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px;overflow:auto}
+.modal{width:min(980px,100%);max-height:94vh;overflow:auto;background:#0a1120;border:1px solid var(--line2);border-radius:20px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal.sm{width:min(480px,100%)}
+.toasts{position:fixed;right:16px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:90;display:flex;flex-direction:column;gap:10px;width:min(380px,calc(100vw - 32px))}
+.toast{border-radius:14px;border:1px solid var(--line2);background:#0b1324;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.5);animation:slideIn .35s ease}
+.toast.alert{border-color:var(--red);background:linear-gradient(180deg,rgba(255,90,77,.14),#0b1324 60%)}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0}}
+.demobar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:85;display:flex;gap:12px;align-items:center;padding:10px 14px;border-radius:16px;border:1px solid var(--cy);background:rgba(6,16,28,.94);box-shadow:0 10px 40px rgba(34,211,238,.2);max-width:calc(100vw - 24px)}
+.steps{display:flex;gap:4px}.steps i{width:18px;height:4px;border-radius:4px;background:var(--line2)}.steps i.on{background:var(--cy)}
+/* misc */
+.tog{width:40px;height:22px;border-radius:99px;background:rgba(130,170,230,.2);border:none;position:relative;padding:0;flex:none;transition:background .2s}
+.tog::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.tog.on{background:var(--cy)}.tog.on::after{transform:translateX(18px)}
+.check{display:flex;gap:9px;align-items:center;color:var(--tx);font-size:13px}.check svg{color:var(--ok);flex:none}
+.bar{height:6px;border-radius:6px;background:rgba(130,170,230,.15);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),var(--bl))}
+.mem{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(10,16,30,.5)}
+.arrow{color:var(--cy);font-family:var(--mono)}
+.tlwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:rgba(6,10,18,.6)}
+.hero{min-height:100vh;display:flex;flex-direction:column}
+.hero-in{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center;padding:60px 6vw 30px;max-width:1400px;margin:0 auto;width:100%}
+.hero h1{font-size:clamp(44px,6vw,84px);line-height:.98;font-weight:800;letter-spacing:-.04em;margin:0 0 18px}
+.hero h2{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--cy);margin:0 0 14px;letter-spacing:-.01em}
+.feat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:0 6vw 60px;max-width:1400px;margin:0 auto;width:100%}
+.menu-btn{display:none}
+.overlay{display:none}
+.flow path.f{stroke-dasharray:6 8;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-28}}
+@media (max-width:1200px){.g6{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:1fr}}
+@media (max-width:960px){
+.app{grid-template-columns:1fr}
+.side{position:fixed;left:0;top:0;bottom:0;height:auto;width:270px;transform:translateX(-102%);transition:transform .25s;padding-top:calc(env(safe-area-inset-top,0px) + 18px)}
+.side.open{transform:none}.overlay.on{display:block;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:35}
+.menu-btn{display:inline-flex}.hero-in{grid-template-columns:1fr;padding-top:30px}.feat{grid-template-columns:repeat(2,minmax(0,1fr))}
+.top{padding:10px 14px}.page{padding:16px 14px}.g3{grid-template-columns:1fr}.ev{grid-template-columns:1fr}}
+@media (max-width:640px){.g2,.g4{grid-template-columns:1fr}.g6{grid-template-columns:repeat(2,minmax(0,1fr))}.feat{grid-template-columns:1fr}h1{font-size:22px}.hide-s{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+'use strict';
+const {useState,useEffect,useRef,useMemo,useCallback,createContext,useContext}=React;
+const h=(t,p,...c)=>{if(p&&p.class!==undefined){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
+const html=htm.bind(h);
+
+/* =====================================================================
+   DATA MODELS (frontend contracts — mirror these in FastAPI/pydantic)
+   Camera    {camera_id,name,location,status,fps,last_update}
+   Detection {detection_id,camera_id,timestamp,object_type,track_id,bounding_box,confidence,embedding}
+   Event     {event_id,camera_id,timestamp,event_type,zone,object_type,confidence,evidence_url}
+   Alert     {alert_id,rule,camera_id,timestamp,severity,confidence,status,evidence_url}
+   Memory    {memory_id,key,value,camera_id,zone,created_at}
+   ===================================================================== */
+const CONFIG={USE_MOCK:true,API_BASE:'http://localhost:8000/api',WS_URL:'ws://localhost:8000/ws/alerts'};
+/* Backend auto-detection: tries the page origin, then http://localhost:8000. If /api/health answers, mock mode is switched off. */
+async function probeBackend(){
+  const cands=[...new Set([location.protocol.startsWith('http')?location.origin:null,new URLSearchParams(location.search).get('api'),'http://localhost:8000'].filter(Boolean))];
+  for(const o of cands){try{const r=await fetch(o+'/api/health',{signal:AbortSignal.timeout(1500)});if(r.ok){CONFIG.API_BASE=o+'/api';CONFIG.WS_URL=o.replace(/^http/,'ws')+'/ws/alerts';CONFIG.USE_MOCK=false;return true}}catch(e){}}
+  return false;
+}
+
+/* ---------- utils ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const sec=s=>{const m=String(s).split(':').map(Number);return m[0]*3600+m[1]*60+(m[2]||0)};
+const t12=(s,withSec=true)=>{const H=Math.floor(s/3600),M=Math.floor(s%3600/60),S=Math.floor(s%60);return `${pad(H%12||12)}:${pad(M)}${withSec?':'+pad(S):''} ${H>=12?'PM':'AM'}`};
+const hash=str=>{let x=2166136261;for(const c of String(str)){x^=c.charCodeAt(0);x=Math.imul(x,16777619)}return x>>>0};
+const rnd=(seed,n)=>hash(seed+'|'+n)/4294967295;
+const nowSec=()=>{const d=new Date();return d.getHours()*3600+d.getMinutes()*60+d.getSeconds()};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const store={get(k,d){try{const v=localStorage.getItem('vg_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('vg_'+k,JSON.stringify(v))}catch(e){}}};
+const COLORS={red:'#d23b32',blue:'#3b6fc4',black:'#262b34',white:'#dde3ea',grey:'#7b8794'};
+const KCOL={person:'#22d3ee',car:'#4f9dff',truck:'#4f9dff',bike:'#4f9dff',bag:'#fbbf24'};
+const isVeh=k=>['car','truck','bike','van'].includes(k);
+
+/* ---------- icons ---------- */
+const IC={
+grid:'M3 3h7v7H3z M14 3h7v7h-7z M14 14h7v7h-7z M3 14h7v7H3z',video:'M1 5h15v14H1z M16 10l7-4v12l-7-4',search:'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3',
+doc:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M9 13h6 M9 17h6',clock:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2',
+route:'M6 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M9 16c7 0 2-8 6-8',bell:'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 0 1-3.4 0',
+poly:'M12 2l9 7-3.5 12h-11L3 9z',camera:'M23 19V8a2 2 0 0 0-2-2h-3l-2-3H8L6 6H3a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+db:'M12 8c4.4 0 8-1.3 8-3s-3.6-3-8-3-8 1.3-8 3 3.6 3 8 3z M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5 M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3',chart:'M3 3v18h18 M7 15l4-4 3 3 5-6',
+sliders:'M4 21v-7 M4 10V3 M12 21v-9 M12 8V3 M20 21v-5 M20 12V3 M1 14h6 M9 8h6 M17 16h6',mic:'M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3',
+send:'M22 2L11 13 M22 2l-7 20-4-9-9-4z',play:'M5 3l14 9-14 9z',check:'M20 6L9 17l-5-5',x:'M18 6L6 18 M6 6l12 12',plus:'M12 5v14 M5 12h14',
+trash:'M3 6h18 M8 6V4h8v2 M19 6l-1 14H6L5 6',edit:'M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',shield:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+menu:'M3 6h18 M3 12h18 M3 18h18',download:'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3',alert:'M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z M12 9v4 M12 17h.01',
+user:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',car:'M5 17h14v-5l-2-5H7l-2 5z M7 17v2 M17 17v2 M5 12h14',
+link:'M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1 M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1',layers:'M12 2l10 5-10 5L2 7z M2 17l10 5 10-5 M2 12l10 5 10-5',
+pin:'M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',eye:'M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+lock:'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',bag:'M6 7h12l1 14H5z M9 7a3 3 0 0 1 6 0',zap:'M13 2L3 14h9l-1 8 10-12h-9z',sound:'M11 5L6 9H2v6h4l5 4z M15.5 8.5a5 5 0 0 1 0 7',
+run:'M13 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z M4 17l5-1 2-5 4 3 3-2 M9 11l2-4 4 1',filter:'M22 3H2l8 9.5V19l4 2v-8.5z',arrow:'M5 12h14 M13 5l7 7-7 7',
+cpu:'M6 6h12v12H6z M9 1v3 M15 1v3 M9 20v3 M15 20v3 M1 9h3 M1 15h3 M20 9h3 M20 15h3',people:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.9 M16 3.1a4 4 0 0 1 0 7.8'
+};
+const Icon=({n,s=16,c,sw=1.8})=>html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${c||'currentColor'} strokeWidth=${sw} strokeLinecap="round" strokeLinejoin="round" style=${{flex:'none'}} aria-hidden="true">${(IC[n]||'M12 12h.01').split(' M').map((d,i)=>html`<path key=${i} d=${(i?'M':'')+d}/>`)}</svg>`;
+
+/* ---------- seed data ---------- */
+const CAMS0=[
+['CAM-01','Main Gate','North perimeter','gate',25],['CAM-02','Parking Area','East lot','parking',25],['CAM-03','Lobby','Ground floor','lobby',30],['CAM-04','Rear Entrance','West wing','rear',25],
+['CAM-05','Corridor','Level 1','corridor',20],['CAM-06','Warehouse','Block B','warehouse',25],['CAM-07','Loading Area','Block B dock','loading',25],['CAM-08','Exit Gate','South perimeter','exit',25]
+].map(([camera_id,name,location,scene,fps])=>({camera_id,name,location,scene,fps,status:'online',last_update:'live'}));
+const camName=(id,cams=CAMS0)=>(cams.find(c=>c.camera_id===id)||{}).name||id;
+
+const LIVE={
+'CAM-01':[{k:'car',color:COLORS.red,x0:40,y:210,vx:14,w:150,h:84,id:'CAR-008',label:'Red Sedan'},{k:'car',color:COLORS.white,x0:330,y:236,vx:-11,w:140,h:76,label:'Car'},{k:'person',color:'#4b5d73',x0:430,y:190,vx:-6,w:46,h:118,label:'Person'},{k:'person',color:'#8a5a44',x0:560,y:200,vx:5,w:44,h:110,label:'Person'}],
+'CAM-02':[{k:'car',color:COLORS.blue,x0:60,y:230,vx:9,w:140,h:76,label:'Car'},{k:'person',color:'#5b6b85',x0:300,y:196,vx:7,w:42,h:108,label:'Person'},{k:'truck',color:COLORS.white,x0:480,y:215,vx:-8,w:190,h:104,label:'Truck'}],
+'CAM-03':[{k:'person',color:'#344a66',x0:100,y:170,vx:8,w:52,h:150,label:'Person'},{k:'person',color:'#7a4b4b',x0:360,y:176,vx:-7,w:50,h:144,label:'Person'},{k:'person',color:'#51606f',x0:520,y:182,vx:4,w:48,h:138,label:'Person'}],
+'CAM-04':[{k:'person',color:'#2e3b4d',x0:200,y:178,vx:6,w:54,h:150,label:'Person'},{k:'bag',color:'#16191f',x0:216,y:260,vx:6,w:32,h:34,label:'Bag'}],
+'CAM-05':[{k:'person',color:'#4a5f7a',x0:150,y:176,vx:10,w:40,h:112,label:'Person'},{k:'person',color:'#6a5a4a',x0:440,y:170,vx:-8,w:38,h:106,label:'Person'}],
+'CAM-06':[{k:'person',color:'#3a4a60',x0:120,y:180,vx:9,w:56,h:156,label:'Person'},{k:'person',color:'#5c4a3a',x0:420,y:170,vx:-6,w:56,h:160,label:'Person'},{k:'truck',color:'#b9c0c9',x0:60,y:150,vx:0,w:150,h:90,label:'Forklift'}],
+'CAM-07':[{k:'truck',color:COLORS.white,x0:90,y:176,vx:5,w:220,h:130,label:'Truck'},{k:'person',color:'#4d5f78',x0:400,y:190,vx:-9,w:48,h:130,label:'Person'},{k:'person',color:'#7a6a4b',x0:540,y:196,vx:6,w:46,h:124,label:'Person'}],
+'CAM-08':[{k:'car',color:COLORS.black,x0:200,y:224,vx:15,w:150,h:82,label:'Car'},{k:'person',color:'#52647e',x0:500,y:190,vx:-5,w:44,h:116,label:'Person'},{k:'bike',color:'#a43',x0:30,y:210,vx:18,w:90,h:80,label:'Bike'}]
+};
+function liveEnts(camId,t){
+  return (LIVE[camId]||[]).map((e,i)=>{const span=640+e.w;const x=((e.x0+e.vx*t)%span+span)%span-e.w;
+    const conf=82+Math.floor(rnd(camId+i,Math.floor(t/6))*16);return Object.assign({},e,{x,conf,key:camId+i})});
+}
+const visible=e=>e.x>=0&&e.x<=640-e.w*0.6;
+
+const mkEv=(id,cam,time,type,obj,color,conf,label,extra={})=>{
+  const w0=obj==='person'?62+rnd(id,1)*14:obj==='truck'?200:obj==='bag'?58:150+rnd(id,1)*35;
+  const w=Math.round(w0),hh=Math.round(obj==='person'?w*2.4:obj==='truck'?130:obj==='bag'?50:w*.69);
+  const bbox=extra.bbox||{x:Math.round(50+rnd(id,2)*(640-w-100)),y:Math.round(Math.max(30,360-hh-12-rnd(id,3)*28)),w,h:hh};
+  return Object.assign({event_id:id,camera_id:cam,t:sec(time),ms:Math.floor(rnd(id,9)*900),event_type:type,zone:null,object_type:obj,color,confidence:conf,label,tags:[],track_id:null,bbox,evidence_url:null},extra,{bbox});
+};
+const EVENTS0=[
+mkEv('EV-1001','CAM-03','08:41:12','Person detected','person','grey',91,'Person'),
+mkEv('EV-1002','CAM-01','08:43:27','Vehicle detected','car','white',89,'White Sedan'),
+mkEv('EV-1003','CAM-06','08:45:02','Restricted Zone Entry','person','grey',92,'Person',{zone:'Restricted Zone',bbox:{x:330,y:150,w:72,h:172}}),
+mkEv('EV-1004','CAM-01','08:46:18','Vehicle detected','car','red',90,'Red Hatchback'),
+mkEv('EV-1005','CAM-02','08:52:40','Entry','car','blue',88,'Blue SUV',{zone:'Parking Area'}),
+mkEv('EV-1006','CAM-04','08:58:09','Person detected','person','black',87,'Person'),
+mkEv('EV-1007','CAM-05','09:02:15','Loitering','person','grey',85,'Person'),
+mkEv('EV-1008','CAM-07','09:05:51','Vehicle detected','truck','white',90,'White Truck',{zone:'Loading Area'}),
+mkEv('EV-1009','CAM-08','09:08:33','Exit','car','black',91,'Black Sedan'),
+mkEv('EV-0914','CAM-01','09:14:32','Entry','car','red',94,'Red Sedan',{track_id:'CAR-008',ms:420,bbox:{x:412,y:218,w:183,h:126}}),
+mkEv('EV-1012','CAM-03','09:16:05','Vehicle detected','car','red',91,'Red Sedan',{track_id:'CAR-008'}),
+mkEv('EV-1013','CAM-05','09:19:20','Vehicle detected','car','red',89,'Red Sedan',{track_id:'CAR-008'}),
+mkEv('EV-1014','CAM-08','09:22:11','Exit','car','red',92,'Red Sedan',{track_id:'CAR-008'}),
+mkEv('EV-1015','CAM-02','09:24:30','Person detected','person','blue',90,'Person'),
+mkEv('EV-1016','CAM-06','09:27:44','Crowd','person','grey',86,'Group of 5',{zone:'Safe Zone'}),
+mkEv('EV-1017','CAM-07','09:29:02','Object Left','bag','black',83,'Black Bag',{zone:'Loading Area'}),
+mkEv('EV-1018','CAM-02','19:48:10','Vehicle detected','car','white',90,'White Sedan',{zone:'Parking Area'}),
+mkEv('EV-1019','CAM-04','19:55:33','Entry','person','black',88,'Person with black bag',{track_id:'PER-114',tags:['bag']}),
+mkEv('EV-1020','CAM-05','19:58:20','Person detected','person','black',89,'Person with black bag',{track_id:'PER-114',tags:['bag']}),
+mkEv('EV-1021','CAM-03','20:03:12','Person detected','person','black',91,'Person with black bag',{track_id:'PER-114',tags:['bag']}),
+mkEv('EV-1022','CAM-06','20:17:42','Restricted Zone Entry','person','black',93,'Person with black bag',{track_id:'PER-114',tags:['bag'],zone:'Restricted Zone',bbox:{x:330,y:150,w:72,h:172}}),
+mkEv('EV-1023','CAM-01','20:21:05','Exit','car','black',90,'Black Sedan'),
+mkEv('EV-1024','CAM-08','20:24:48','Exit','person','grey',89,'Person')
+];
+const TRACKS0={'CAR-008':{id:'CAR-008',label:'Red Sedan',kind:'vehicle',conf:91},'PER-114':{id:'PER-114',label:'Person with black bag',kind:'person',conf:88}};
+const valid=(conf,s)=>({conf:s?conf:conf,frames:5,zone:true,time:true,dup:true});
+const ALERTS0=[
+{alert_id:'AL-001',rule:'Restricted Zone Entry',camera_id:'CAM-06',t:sec('20:17:42'),severity:'critical',confidence:93,status:'Resolved',day:'today',event_id:'EV-1022',createdAt:0},
+{alert_id:'AL-002',rule:'Red Vehicle',camera_id:'CAM-01',t:sec('09:14:32'),severity:'warning',confidence:94,status:'Investigating',day:'today',event_id:'EV-0914',createdAt:0},
+{alert_id:'AL-003',rule:'Object Left Behind',camera_id:'CAM-07',t:sec('09:29:02'),severity:'critical',confidence:83,status:'New',day:'today',event_id:'EV-1017',createdAt:0},
+{alert_id:'AL-004',rule:'Person Loitering',camera_id:'CAM-05',t:sec('09:02:15'),severity:'warning',confidence:85,status:'Resolved',day:'yesterday',event_id:'EV-1007',createdAt:0},
+{alert_id:'AL-005',rule:'Crowd Formation',camera_id:'CAM-06',t:sec('09:27:44'),severity:'warning',confidence:86,status:'Resolved',day:'yesterday',event_id:'EV-1016',createdAt:0}
+];
+const MEM0=[
+{memory_id:'M1',key:'Parking Area',value:'CAM-02',camera_id:'CAM-02',zone:null,created_at:'2026-10-01'},
+{memory_id:'M2',key:'Lobby',value:'CAM-03',camera_id:'CAM-03',zone:null,created_at:'2026-10-01'},
+{memory_id:'M3',key:'Restricted Zone',value:'CAM-06',camera_id:'CAM-06',zone:'Restricted Zone',created_at:'2026-10-01'},
+{memory_id:'M4',key:'Loading Area',value:'CAM-07',camera_id:'CAM-07',zone:'Loading Zone',created_at:'2026-10-01'}
+];
+const ZC={safe:'#34d399',restricted:'#ff5a4d',loading:'#ffb020',custom:'#4f8cff'};
+const ZONES0=[
+{id:'Z1',camera_id:'CAM-06',name:'Safe Zone',type:'safe',pts:[[30,120],[270,120],[270,340],[30,340]],rule:'Log activity only.'},
+{id:'Z2',camera_id:'CAM-06',name:'Restricted Zone',type:'restricted',pts:[[300,90],[560,90],[590,330],[290,330]],rule:'Alert when a person enters after 8 PM.'},
+{id:'Z3',camera_id:'CAM-06',name:'Loading Zone',type:'loading',pts:[[580,140],[630,140],[630,330],[600,330]],rule:'Alert if a vehicle stays more than 10 minutes.'},
+{id:'Z4',camera_id:'CAM-07',name:'Loading Zone',type:'loading',pts:[[40,150],[600,150],[620,340],[20,340]],rule:'Alert if an object is left behind.'},
+{id:'Z5',camera_id:'CAM-02',name:'Parking Bays',type:'safe',pts:[[20,130],[620,130],[630,340],[10,340]],rule:'Log vehicle entry and exit.'}
+];
+const SET0={blurFaces:true,blurPlates:true,local:true,noCloud:true,autoDelete:true,sound:true,conf:85,frames:5,cooldown:10};
+
+/* ---------- service layer (swap mock for fetch/WebSocket) ---------- */
+const http=async(path,opt)=>{const r=await fetch(CONFIG.API_BASE+path,Object.assign({headers:{'Content-Type':'application/json'}},opt));if(!r.ok)throw new Error(r.status);return r.json()};
+class AlertFeed{
+  constructor(){this.subs=new Set();this.ws=null}
+  subscribe(fn){this.subs.add(fn);return()=>this.subs.delete(fn)}
+  connect(){if(CONFIG.USE_MOCK||this.ws)return;const open=()=>{try{this.ws=new WebSocket(CONFIG.WS_URL);this.ws.onmessage=e=>this.emit(JSON.parse(e.data));this.ws.onclose=()=>{this.ws=null;setTimeout(open,3000)}}catch(e){}};open()}
+  emit(p){this.subs.forEach(f=>f(p))}
+  mockEmit(p){setTimeout(()=>this.emit(p),250)}
+}
+const PLACES=[{n:'Main Gate',re:/main gate|front gate/},{n:'Parking Area',re:/parking/},{n:'Lobby',re:/lobby/},{n:'Restricted Zone',re:/restricted/},{n:'Loading Area',re:/loading/},{n:'Rear Entrance',re:/rear entrance|back door/},{n:'Exit Gate',re:/exit gate|rear exit/},{n:'Warehouse',re:/warehouse/},{n:'Corridor',re:/corridor/}];
+const findPlace=t=>PLACES.find(p=>p.re.test(t));
+const lookupMem=(p,mem)=>mem.find(m=>p.re.test(m.key.toLowerCase())||m.key.toLowerCase()===p.n.toLowerCase());
+const REF=sec('09:30:00');
+const VEH=/\b(car|cars|sedan|vehicle|vehicles|truck|trucks|van|bike|suv)\b/;
+const PERS=/\b(person|people|anyone|someone|anybody|man|woman|pedestrian|pedestrians|visitor)\b/;
+
+function parseStanding(text,mem){
+  const t=text.toLowerCase();
+  const obj=VEH.test(t)?'Vehicle':/\bbag\b/.test(t)?'Bag':PERS.test(t)?'Person':'Any object';
+  const event=/loiter/.test(t)?'Loitering':/\brun|running/.test(t)?'Running':/crowd/.test(t)?'Crowd':/left behind|abandon/.test(t)?'Object Left':/\b(exit|leaves|leave|leaving)\b/.test(t)?'Exit':'Entry';
+  const place=findPlace(t);const m=place&&lookupMem(place,mem);
+  const tm=t.match(/\b(after|before)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/);
+  const col=(t.match(/\b(red|blue|black|white)\b/)||[])[1];
+  return {sq_id:'SQ-'+Math.random().toString(36).slice(2,6).toUpperCase(),text,object:(col?cap(col)+' ':'')+obj,event,zone:place?place.n:'Any zone',camera_id:m?m.camera_id:null,
+    time:tm?`${cap(tm[1])} ${tm[2]}:${tm[3]||'00'} ${tm[4].toUpperCase()}`:'Any time',action:'Generate Alert',active:true,place:place?place.n:null,created:Date.now()};
+}
+
+const api={
+  async getCameras(){if(!CONFIG.USE_MOCK)return http('/cameras');return JSON.parse(JSON.stringify(CAMS0))},
+  async getEvents(){if(!CONFIG.USE_MOCK)return http('/events');return EVENTS0},
+  async parseStandingQuery(text,mem){return parseStanding(text,mem)},
+  async trackEntity(id,events){return events.filter(e=>e.track_id===id).sort((a,b)=>a.t-b.t)},
+  async investigate(f,events){
+    return events.filter(e=>{
+      if(f.obj!=='Any'){const o=f.obj.toLowerCase();if(o==='car'||o==='truck'||o==='bike'){if(e.object_type!==o)return false}else if(o==='person'){if(e.object_type!=='person')return false}else if(o==='bag'){if(e.object_type!=='bag'&&!e.tags.includes('bag'))return false}}
+      if(f.color!=='Any'&&e.color!==f.color.toLowerCase())return false;
+      if(f.loc!=='Any Camera'){const p=PLACES.find(p=>p.n===f.loc);const m=f.mem&&lookupMem(p,f.mem);if(p.n==='Restricted Zone'){if(e.zone!=='Restricted Zone')return false}else if(!m||m.camera_id!==e.camera_id)return false}
+      if(f.time==='Last 5 minutes'&&!(e.t<=REF&&e.t>=REF-300))return false;
+      if(f.time==='Last hour'&&!(e.t<=REF&&e.t>=REF-3600))return false;
+      if(f.event!=='Any'&&e.event_type!==f.event)return false;return true}).sort((a,b)=>b.t-a.t)},
+  async query({text,memory,ctx,temp={}}){
+    const t=text.toLowerCase().trim();const mem=memory.concat(Object.entries(temp).map(([k,v])=>({key:k,value:v,camera_id:v,memory_id:'tmp'})));
+    const events=ctx.events;
+    const place=findPlace(t);
+    const follow=/where did (it|he|she|they|that|the)|\btrack\b|journey|\bfollow\b|after leaving/.test(t);
+    if(!follow&&place&&!lookupMem(place,mem))return {kind:'clarify',text:`I don't know which camera represents the ${place.n}.`,data:{place:place.n,pending:text}};
+    if(/^(alert|notify|warn)\b|let me know|tell me (if|when)/.test(t)){const q=await api.parseStandingQuery(text,mem);return {kind:'standing',text:'Standing query created. I will watch every stream and raise an alert when the conditions match.',data:q}}
+    if(follow){
+      const id=/red (car|sedan|vehicle)/.test(t)?'CAR-008':/\bbag\b/.test(t)?'PER-114':ctx.entity;
+      if(!id)return {kind:'text',text:'Which object should I follow? Try "Track the red car" or ask a search question first so I have something to follow.'};
+      const trk=await api.trackEntity(id,events);return {kind:'journey',text:`Reconstructed the journey of ${TRACKS0[id].label} (${id}) across ${trk.length} cameras.`,data:{track_id:id},entity:id}}
+    const obj=VEH.test(t)?'vehicle':/\b(bag|backpack)\b/.test(t)&&!PERS.test(t)?'bag':PERS.test(t)?'person':null;
+    const bag=/\b(bag|backpack)\b/.test(t);const color=bag?null:(t.match(/\b(red|blue|black|white)\b/)||[])[1];
+    const verb=/\b(enter|entered|enters|entering|entry|came in)\b/.test(t)?['Entry']:/\bpass(ed)?\b/.test(t)?['Entry','Exit']:/\b(exit|exited|left|leave|leaving)\b/.test(t)?['Exit']:null;
+    const tm=t.match(/\b(\d{1,2})\s?(am|pm)\b/);const tcen=tm?(((+tm[1])%12)+(tm[2]==='pm'?12:0))*3600:null;
+    const lastHour=/last hour/.test(t);
+    if(!obj&&!color&&!verb&&!place&&!tm&&!bag)return {kind:'none',text:'I could not map that to anything I can search for yet. Try an object, a place or a time, for example "Show all vehicles that entered today".'};
+    let res=events.filter(e=>{
+      if(obj==='vehicle'&&!isVeh(e.object_type))return false;if(obj==='person'&&e.object_type!=='person')return false;if(obj==='bag'&&e.object_type!=='bag'&&!e.tags.includes('bag'))return false;
+      if(bag&&obj==='person'&&!e.tags.includes('bag'))return false;
+      if(color&&e.color!==color)return false;if(verb&&!verb.includes(e.event_type)&&!(verb.includes('Entry')&&e.event_type==='Restricted Zone Entry'))return false;
+      if(place){const m=lookupMem(place,mem);if(place.n==='Restricted Zone'){if(e.zone!=='Restricted Zone')return false}else if(m&&m.camera_id!==e.camera_id)return false}
+      if(tcen!==null&&Math.abs(e.t-tcen)>5400)return false;if(lastHour&&!(e.t<=REF&&e.t>=REF-3600))return false;return true}).sort((a,b)=>b.confidence-a.confidence);
+    const chips=[obj&&['Object',obj],bag&&['Attribute','black bag'],color&&['Color',color],verb&&['Event',verb.join(' / ')],place&&['Location',`${place.n} → ${(lookupMem(place,mem)||{}).camera_id||'?'}`],tm&&['Time',`around ${tm[1]} ${tm[2].toUpperCase()}`],lastHour&&['Window','last hour']].filter(Boolean);
+    if(!res.length)return {kind:'none',text:'No matching events were found in the indexed footage. Nothing in the demo dataset matches all of those conditions.',data:{chips}};
+    const top=res[0];const yn=/^(did|was|is|has|were|do|does|any)\b/.test(t);
+    const line=`${top.camera_id}, ${camName(top.camera_id)}, ${t12(top.t)}, ${top.label}, ${top.confidence}% confidence.`;
+    return {kind:'match',text:(yn?'Yes — ':'')+(res.length>1?`${res.length} matching events found. Best match: ${line}`:`${res.length===1&&yn?'':'Found 1 matching event. '}${line}`),
+      data:{events:res,chips,explain:`Matched ${chips.map(c=>c[1]).join(', ')} against indexed detections on ${[...new Set(res.map(r=>r.camera_id))].join(', ')}.`},entity:top.track_id||ctx.entity}
+  }
+};
+
+/* ---------- procedural CCTV scenes (placeholder imagery, not real footage) ---------- */
+const BG={
+gate:['#18222f','#0c121b','#232a34','#12171f'],parking:['#1a2230','#0d1219','#262c36','#141a22'],lobby:['#1d2636','#0e141e','#2a3446','#141b27'],rear:['#161d28','#0a0f16','#222831','#10151c'],
+corridor:['#1b2433','#0d131c','#252d3b','#121821'],warehouse:['#1a212b','#0b1017','#2a2f36','#151a20'],loading:['#1b232e','#0c1118','#2a313b','#151a22'],exit:['#17202c','#0a0f16','#222a34','#11161d']};
+function Bg({kind}){
+  const c=BG[kind]||BG.gate;const hz=150;
+  let x=null;
+  if(kind==='gate')x=html`<g><rect x="50" y="20" width="16" height="170" fill="#2c3542"/><rect x="574" y="20" width="16" height="170" fill="#2c3542"/><rect x="66" y="118" width="250" height="8" fill="#c8ced6"/><rect x="96" y="118" width="28" height="8" fill="#c0392b"/><rect x="156" y="118" width="28" height="8" fill="#c0392b"/><rect x="216" y="118" width="28" height="8" fill="#c0392b"/><rect x="470" y="60" width="104" height="100" fill="#1d2633"/><rect x="484" y="76" width="50" height="30" fill="#33516b" opacity=".7"/><path d="M0 300H640" stroke="#3b4554" strokeDasharray="30 22" strokeWidth="3"/></g>`;
+  if(kind==='parking')x=html`<g>${[0,1,2,3,4].map(i=>html`<g key=${i} opacity=".75"><rect x=${24+i*124} y="96" width="96" height="46" rx="9" fill=${['#2c3544','#3a2f2f','#2a3a35','#343a44','#2f2a3c'][i]}/><rect x=${40+i*124} y="102" width="64" height="16" rx="4" fill="#0a0f16" opacity=".6"/></g>`)}${[0,1,2,3,4,5].map(i=>html`<path key=${'l'+i} d=${`M${10+i*124} 330L${34+i*108} 160`} stroke="#8a95a6" strokeWidth="2" opacity=".35"/>`)}</g>`;
+  if(kind==='lobby')x=html`<g>${[110,320,530].map(a=>html`<rect key=${a} x=${a} y="0" width="38" height="196" fill="#222c3d"/>`)}<rect x="215" y="146" width="210" height="44" rx="6" fill="#2d3a50"/><rect x="215" y="140" width="210" height="8" fill="#3c4d68"/><rect x="0" y="196" width="640" height="164" fill="url(#lobfl)" opacity=".5"/></g>`;
+  if(kind==='rear')x=html`<g><rect x="60" y="40" width="130" height="150" fill="#1c232d" stroke="#3a4554" strokeWidth="3"/><rect x="72" y="54" width="48" height="136" fill="#10151c"/><rect x="460" y="120" width="120" height="70" rx="4" fill="#26402f"/><circle cx="320" cy="40" r="60" fill="#ffd27a" opacity=".07"/></g>`;
+  if(kind==='corridor')x=html`<g><polygon points="0,0 230,112 230,238 0,360" fill="#202a3a"/><polygon points="640,0 410,112 410,238 640,360" fill="#202a3a"/><rect x="270" y="118" width="100" height="116" fill="#0b1018" stroke="#3b4a60"/><polygon points="0,0 640,0 410,112 230,112" fill="#161d29"/>${[0,1,2].map(i=>html`<ellipse key=${i} cx="320" cy=${22+i*30} rx=${60-i*14} ry="4" fill="#bfe6ff" opacity=".5"/>`)}</g>`;
+  if(kind==='warehouse')x=html`<g>${[0,1,2,3].map(i=>html`<g key=${i}><rect x=${20+i*160} y="30" width="8" height="170" fill="#7a5b2c"/><rect x=${20+i*160} y="70" width="128" height="6" fill="#a8742c"/><rect x=${20+i*160} y="118" width="128" height="6" fill="#a8742c"/><rect x=${32+i*160} y="44" width="44" height="26" fill="#4a3f33"/><rect x=${84+i*160} y="92" width="52" height="26" fill="#3f4a3a"/></g>`)}</g>`;
+  if(kind==='loading')x=html`<g>${[0,1,2].map(i=>html`<g key=${i}><rect x=${30+i*205} y="26" width="170" height="140" fill="#2a323d" stroke="#3d4856" strokeWidth="3"/>${[0,1,2,3,4,5,6].map(j=>html`<rect key=${j} x=${34+i*205} y=${32+j*19} width="162" height="2" fill="#16202c"/>`)}</g>`)}<path d="M0 230H640" stroke="#d9a520" strokeWidth="4" opacity=".6"/></g>`;
+  if(kind==='exit')x=html`<g><rect x="30" y="30" width="16" height="170" fill="#2b3340"/><rect x="594" y="30" width="16" height="170" fill="#2b3340"/><rect x="30" y="30" width="580" height="16" fill="#2b3340"/><rect x="270" y="52" width="100" height="26" rx="4" fill="#0e3b2b"/><text x="320" y="71" fill="#58f0b0" fontSize="16" textAnchor="middle" fontFamily="monospace">EXIT</text><path d="M0 310H640" stroke="#3b4554" strokeDasharray="30 22" strokeWidth="3"/></g>`;
+  return html`<g><defs><linearGradient id=${'t'+kind} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor=${c[0]}/><stop offset="1" stopColor=${c[1]}/></linearGradient><linearGradient id=${'f'+kind} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor=${c[2]}/><stop offset="1" stopColor=${c[3]}/></linearGradient><linearGradient id="lobfl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4a5d7c"/><stop offset="1" stopColor="#1a2233"/></linearGradient><filter id="vgblur"><feGaussianBlur stdDeviation="3.2"/></filter></defs>
+  <rect width="640" height="360" fill=${`url(#t${kind})`}/><rect y=${hz} width="640" height=${360-hz} fill=${`url(#f${kind})`}/>${x}</g>`;
+}
+function Sprite({e,face,plate}){
+  const {w,h,color:c,k}=e;
+  const shadow=html`<ellipse cx=${w/2} cy=${h*.985} rx=${w*.5} ry=${Math.max(3,h*.04)} fill="#000" opacity=".4"/>`;
+  if(k==='person')return html`<g>${shadow}<rect x=${w*.28} y=${h*.6} width=${w*.17} height=${h*.38} rx="3" fill="#161b24"/><rect x=${w*.55} y=${h*.6} width=${w*.17} height=${h*.38} rx="3" fill="#161b24"/><rect x=${w*.15} y=${h*.2} width=${w*.7} height=${h*.46} rx=${w*.14} fill=${c}/><circle cx=${w/2} cy=${h*.11} r=${Math.min(w*.2,h*.075)} fill="#c9a285" filter=${face?'url(#vgblur)':undefined}/>${e.bag?html`<rect x=${w*.6} y=${h*.42} width=${w*.34} height=${h*.2} rx="3" fill="#0d0f13"/>`:null}</g>`;
+  if(k==='bag')return html`<g><rect x="0" y=${h*.2} width=${w} height=${h*.8} rx="5" fill=${c} stroke="#2b313a"/><path d=${`M${w*.3} ${h*.2}a${w*.2} ${h*.2} 0 0 1 ${w*.4} 0`} stroke="#2b313a" fill="none" strokeWidth="2"/></g>`;
+  if(k==='truck')return html`<g>${shadow}<rect x="0" y=${h*.08} width=${w*.68} height=${h*.72} rx="4" fill=${c}/><rect x=${w*.7} y=${h*.3} width=${w*.3} height=${h*.5} rx="6" fill=${c} opacity=".92"/><rect x=${w*.76} y=${h*.36} width=${w*.17} height=${h*.2} fill="#0b1118" opacity=".8"/>${[.14,.5,.84].map(a=>html`<circle key=${a} cx=${w*a} cy=${h*.86} r=${h*.1} fill="#0d1015" stroke="#3a4048" strokeWidth="2"/>`)}</g>`;
+  if(k==='bike')return html`<g>${shadow}<circle cx=${w*.2} cy=${h*.78} r=${h*.2} fill="none" stroke="#222" strokeWidth="4"/><circle cx=${w*.8} cy=${h*.78} r=${h*.2} fill="none" stroke="#222" strokeWidth="4"/><path d=${`M${w*.2} ${h*.78}L${w*.45} ${h*.45}L${w*.8} ${h*.78}M${w*.45} ${h*.45}L${w*.65} ${h*.42}`} stroke=${c} strokeWidth="4" fill="none"/><circle cx=${w*.5} cy=${h*.2} r=${h*.09} fill="#c9a285"/></g>`;
+  return html`<g>${shadow}<rect x="0" y=${h*.4} width=${w} height=${h*.44} rx=${h*.12} fill=${c}/><path d=${`M${w*.17} ${h*.42}L${w*.3} ${h*.12}H${w*.72}L${w*.86} ${h*.42}Z`} fill=${c}/><path d=${`M${w*.22} ${h*.4}L${w*.33} ${h*.17}H${w*.5}V${h*.4}ZM${w*.54} ${h*.4}V${h*.17}H${w*.69}L${w*.8} ${h*.4}Z`} fill="#0c141e" opacity=".85"/><rect x="0" y=${h*.4} width=${w} height=${h*.44} rx=${h*.12} fill="#000" opacity=".12"/><rect x=${w*.42} y=${h*.62} width=${w*.16} height=${h*.1} fill="#d9dde2" filter=${plate?'url(#vgblur)':undefined}/><rect x=${w*.04} y=${h*.5} width=${w*.07} height=${h*.07} fill="#ffe9a8" opacity=".8"/>${[.22,.78].map(a=>html`<circle key=${a} cx=${w*a} cy=${h*.84} r=${h*.13} fill="#0d1015" stroke="#3a4048" strokeWidth="2"/>`)}</g>`;
+}
+function Ent({e,hl,dim,boxes=true,priv}){
+  const prev=useRef(e.x);const jump=Math.abs(e.x-prev.current)>140;prev.current=e.x;
+  const sc=hl?'#ff5a4d':(KCOL[e.k]||'#22d3ee');const lab=`${e.label||e.k} ${Math.round(e.conf||90)}%`;
+  return html`<g style=${{transform:`translate(${e.x}px,${e.y}px)`,transition:jump||e.fixed?'none':'transform 1s linear'}} opacity=${dim?.5:1}>
+  <${Sprite} e=${e} face=${priv&&priv.face} plate=${priv&&priv.plate}/>
+  ${boxes?html`<g><rect x="-2" y="-2" width=${e.w+4} height=${e.h+4} fill="none" stroke=${sc} strokeWidth=${hl?3:2} rx="3"/><rect x="-2" y="-19" width=${lab.length*6.6+10} height="17" fill=${sc}/><text x="3" y="-6.5" fontSize="11" fontFamily="JetBrains Mono, monospace" fill="#02131a" fontWeight="600">${lab}</text></g>`:null}</g>`;
+}
+function Frame({cam,ents,zones,boxes=true,hl,priv,children,style}){
+  return html`<div class="frame" style=${style}>
+  <svg class="scene" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" role="img" aria-label=${'Simulated view '+cam.camera_id}>
+  <${Bg} kind=${cam.scene}/>
+  ${(zones||[]).map(z=>html`<polygon key=${z.id} points=${z.pts.map(p=>p.join(',')).join(' ')} fill=${ZC[z.type]||ZC.custom} fillOpacity=".16" stroke=${ZC[z.type]||ZC.custom} strokeWidth="2" strokeDasharray="8 5"/>`)}
+  ${ents.map(e=>html`<${Ent} key=${e.key||e.id} e=${e} hl=${hl||e.hl} dim=${e.dim} boxes=${boxes} priv=${priv}/>`)}
+  </svg>${children}</div>`;
+}
+/* evidence frame for a stored event */
+function evEnts(ev,cams){
+  const cam=cams.find(c=>c.camera_id===ev.camera_id)||CAMS0[0];
+  const amb=liveEnts(ev.camera_id,hash(ev.event_id)%90).filter(e=>visible(e)&&!(e.x<ev.bbox.x+ev.bbox.w+20&&e.x+e.w>ev.bbox.x-20)).slice(0,2).map(e=>Object.assign({},e,{fixed:true,dim:true,key:'a'+e.key}));
+  const main={k:ev.object_type==='bag'?'bag':ev.object_type,color:COLORS[ev.color]||'#6d7f96',x:ev.bbox.x,y:ev.bbox.y,w:ev.bbox.w,h:ev.bbox.h,conf:ev.confidence,label:ev.label,fixed:true,key:'main',bag:ev.tags.includes('bag'),hl:ev.event_type==='Restricted Zone Entry'||ev.event_type==='Object Left'};
+  return {cam,ents:amb.concat(main)};
+}
+function EvFrame({ev,cams,zones,priv,hud=true,style}){
+  const {cam,ents}=evEnts(ev,cams);
+  return html`<${Frame} cam=${cam} ents=${ents} priv=${priv} zones=${zones} style=${style}>${hud?html`<${React.Fragment}><div class="hud tl">${ev.camera_id}</div><div class="hud br">${hms2(ev.t)}</div><//>`:null}<//>`;
+}
+const hms2=s=>`${pad(Math.floor(s/3600))}:${pad(Math.floor(s%3600/60))}:${pad(Math.floor(s%60))}`;
+
+/* ---------- charts (inline SVG) ---------- */
+function Spark({data,labels,color='#22d3ee',h=180,fill=true}){
+  const W=600,P=28,mx=Math.max(...data)*1.1||1,mn=0;const pts=data.map((v,i)=>[P+i*(W-P*2)/(data.length-1),h-24-(v-mn)/(mx-mn)*(h-48)]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join('');
+  return html`<svg viewBox=${`0 0 ${W} ${h}`} style=${{width:'100%',display:'block'}} role="img"><defs><linearGradient id=${'sg'+color.slice(1)} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor=${color} stopOpacity=".35"/><stop offset="1" stopColor=${color} stopOpacity="0"/></linearGradient></defs>
+  ${[0,1,2,3].map(i=>html`<line key=${i} x1=${P} x2=${W-P} y1=${24+i*(h-48)/3} y2=${24+i*(h-48)/3} stroke="rgba(130,170,230,.1)"/>`)}
+  ${fill?html`<path d=${d+`L${pts[pts.length-1][0]} ${h-24}L${P} ${h-24}Z`} fill=${`url(#sg${color.slice(1)})`}/>`:null}<path d=${d} fill="none" stroke=${color} strokeWidth="2.4" strokeLinejoin="round"/>
+  ${labels?labels.map((l,i)=>(i%Math.ceil(labels.length/8)===0)?html`<text key=${i} x=${pts[i][0]} y=${h-6} fontSize="10" fill="#6b7d99" textAnchor="middle" fontFamily="JetBrains Mono, monospace">${l}</text>`:null):null}</svg>`;
+}
+function Bars({data,h=180,color='#4f8cff',horizontal=false,fmt=v=>v}){
+  const mx=Math.max(...data.map(d=>d.v))*1.15||1;
+  if(horizontal)return html`<div class="col" style=${{gap:9}}>${data.map(d=>html`<div key=${d.l}><div class="row sb" style=${{fontSize:12,marginBottom:3}}><span>${d.l}</span><span class="mono" style=${{color:'var(--mut)'}}>${fmt(d.v)}</span></div><div class="bar"><i style=${{width:(d.v/mx*100)+'%'}}></i></div></div>`)}</div>`;
+  const W=600,bw=(W-40)/data.length;
+  return html`<svg viewBox=${`0 0 ${W} ${h}`} style=${{width:'100%',display:'block'}} role="img">${[0,1,2,3].map(i=>html`<line key=${i} x1="20" x2=${W-20} y1=${20+i*(h-50)/3} y2=${20+i*(h-50)/3} stroke="rgba(130,170,230,.1)"/>`)}
+  ${data.map((d,i)=>{const bh=d.v/mx*(h-50);return html`<g key=${d.l}><rect x=${24+i*bw+bw*.18} y=${h-30-bh} width=${bw*.64} height=${bh} rx="5" fill=${d.c||color} opacity=".9"/><text x=${24+i*bw+bw/2} y=${h-12} fontSize="10" fill="#6b7d99" textAnchor="middle" fontFamily="JetBrains Mono, monospace">${d.l}</text><text x=${24+i*bw+bw/2} y=${h-34-bh} fontSize="10" fill="#c3d0e4" textAnchor="middle" fontFamily="JetBrains Mono, monospace">${fmt(d.v)}</text></g>`})}</svg>`;
+}
+function Donut({parts,size=170}){
+  const tot=parts.reduce((a,p)=>a+p.v,0);let a0=-Math.PI/2;const R=62,r=40,C=80;
+  return html`<div class="row" style=${{gap:18}}><svg width=${size} height=${size} viewBox="0 0 160 160" role="img">${parts.map(p=>{const a1=a0+p.v/tot*Math.PI*2;const lg=a1-a0>Math.PI?1:0;const d=`M${C+R*Math.cos(a0)} ${C+R*Math.sin(a0)}A${R} ${R} 0 ${lg} 1 ${C+R*Math.cos(a1)} ${C+R*Math.sin(a1)}L${C+r*Math.cos(a1)} ${C+r*Math.sin(a1)}A${r} ${r} 0 ${lg} 0 ${C+r*Math.cos(a0)} ${C+r*Math.sin(a0)}Z`;a0=a1;return html`<path key=${p.l} d=${d} fill=${p.c}/>`})}</svg>
+  <div class="col" style=${{gap:6}}>${parts.map(p=>html`<div key=${p.l} class="row" style=${{gap:8,fontSize:13}}><i style=${{width:10,height:10,borderRadius:3,background:p.c}}></i>${p.l}<b class="mono">${Math.round(p.v/tot*100)}%</b></div>`)}</div></div>`;
+}
+
+/* ---------- small shared components ---------- */
+const AppCtx=createContext(null);const useApp=()=>useContext(AppCtx);
+function useCount(target,dur=900){
+  const [v,setV]=useState(0);const from=useRef(0);
+  useEffect(()=>{let raf,t0=performance.now();const f0=from.current;const step=t=>{const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);const val=f0+(target-f0)*e;setV(val);from.current=val;if(p<1)raf=requestAnimationFrame(step)};raf=requestAnimationFrame(step);return()=>cancelAnimationFrame(raf)},[target]);
+  return v;
+}
+const Counter=({v,dec=0,suf=''})=>{const x=useCount(v);return html`<span>${dec?x.toFixed(dec):Math.round(x).toLocaleString()}${suf}</span>`};
+const Toggle=({on,set,label})=>html`<button class=${'tog'+(on?' on':'')} role="switch" aria-checked=${on} aria-label=${label} onClick=${()=>set(!on)}></button>`;
+const Sev=({s})=>html`<span class=${'chip '+(s==='critical'?'red':'warn')}>${s==='critical'?'Critical':'Warning'}</span>`;
+const Stat=({s})=>html`<span class=${'chip '+(s==='Resolved'?'ok':s==='New'?'red':'warn')}>${s}</span>`;
+const Head=({title,sub,children})=>html`<div class="row sb"><div><h1>${title}</h1>${sub?html`<p class="sub">${sub}</p>`:null}</div><div class="row">${children}</div></div>`;
+function Validation({conf,settings}){
+  const ck=[`Object confidence > ${settings.conf}%  (${conf}%)`,`Detected across ${settings.frames} consecutive frames`,'Correct zone','Correct time window',`No duplicate alert within ${settings.cooldown}s cooldown`];
+  return html`<div class="card flat col" style=${{gap:8}}><div class="row sb"><h3>Alert validation</h3><span class="chip ok mono">Alert confidence ${conf}%</span></div>${ck.map(c=>html`<div key=${c} class="check"><${Icon} n="check" s=${15}/>${c}</div>`)}<span class="label">Rule thresholds come from Settings. Validation is simulated until the alert engine is connected.</span></div>`;
+}
+const SERVICES=['AI Detection','Object Tracking','Open-Vocabulary Search','Vector Search','Cross-Camera Re-ID','Alert Engine','Memory'];
+function StatusPanel(){
+  return html`<div class="card col" style=${{gap:9}}><div class="row sb"><h2>AI status</h2><span class="chip warn">Simulated</span></div>${SERVICES.map(s=>html`<div key=${s} class="row sb" style=${{fontSize:13}}><span>${s}</span><span class="row" style=${{gap:7,color:'var(--ok)'}}><i class="dot pulse"></i>Online</span></div>`)}<span class="label">Status reflects the demo layer. No computer-vision backend is connected.</span></div>`;
+}
+function EvidenceCard({ev,compact}){
+  const A=useApp();
+  return html`<div class="ev"><div><${EvFrame} ev=${ev} cams=${A.cams} priv=${A.priv}/></div><div class="col" style=${{gap:8}}>
+  <div class="row"><span class="chip ok">${ev.event_type==='Restricted Zone Entry'||ev.event_type==='Object Left'?'EVENT FOUND':'MATCH FOUND'}</span><span class="chip mono">${ev.event_id}</span></div>
+  <div class="trip"><div><small>CAMERA</small><b>${ev.camera_id}</b><br/><span style=${{fontSize:12,color:'var(--mut)'}}>${camName(ev.camera_id,A.cams)}</span></div><div><small>TIMESTAMP</small><b>${t12(ev.t)}</b></div><div><small>EVIDENCE</small><b>${ev.label}</b><br/><span style=${{fontSize:12,color:'var(--mut)'}}>${ev.confidence}% confidence</span></div></div>
+  <div class="row"><button class="btn primary sm" onClick=${()=>A.openEv(ev,true)}><${Icon} n="play" s=${13}/>Play clip</button><button class="btn sm" onClick=${()=>A.openCam(ev.camera_id)}>Open camera</button><button class="btn sm" onClick=${()=>A.go('timeline',{ev})}>View timeline</button></div></div></div>`;
+}
+function JourneyChain({track,events,cams}){
+  const A=useApp();const evs=events.filter(e=>e.track_id===track).sort((a,b)=>a.t-b.t);
+  return html`<div class="row" style=${{gap:6}}>${evs.map((e,i)=>html`<div key=${e.event_id} class="row" style=${{gap:6}}><button class="btn sm" onClick=${()=>A.openEv(e)}><span class="mono">${hms2(e.t).slice(0,5)}</span> ${e.camera_id}<span style=${{color:'var(--mut)'}}>${camName(e.camera_id,cams)}</span></button>${i<evs.length-1?html`<span class="arrow">→</span>`:null}</div>`)}</div>`;
+}
+
+/* ---------- landing ---------- */
+function Landing({onLaunch,onDemo}){
+  const feats=[['search','Open-vocabulary search','Describe what you are looking for in plain words. No fixed class list.'],['pin','Evidence-grounded answers','Every answer carries a camera, a timestamp and a frame you can check.'],['db','Persistent memory','Teach it once that the Main Gate is CAM-01. It remembers.'],['route','Cross-camera tracking','Follow one car or person across the whole site.'],['bell','Real-time alerts','Say a rule in a sentence. Get an alert with validation attached.'],['layers','Multi-stream intelligence','Index every camera into one searchable timeline.']];
+  return html`<div class="hero"><div class="top" style=${{background:'transparent',borderBottom:'none'}}><div class="brand" style=${{padding:0}}><div class="logo"><${Icon} n="eye" s=${19} sw=${2.2}/></div><b>VisionGuard AI</b></div><div class="sp"></div><span class="pill hide-s"><i class="dot warn"></i>Frontend demo · mock data</span><button class="btn" onClick=${onLaunch}>Launch dashboard</button></div>
+  <div class="hero-in"><div><h1>Ask your cameras.<br/>Understand every event.</h1><h2>Multi-camera AI video intelligence</h2><p class="sub" style=${{maxWidth:520,fontSize:15.5}}>Conversational search, persistent memory, cross-camera tracking and real-time alerts across every CCTV stream, with a camera, a timestamp and evidence behind each answer.</p>
+  <div class="row" style=${{marginTop:26}}><button class="btn primary" style=${{padding:'12px 20px'}} onClick=${onLaunch}>Launch dashboard</button><button class="btn" style=${{padding:'12px 20px'}} onClick=${onDemo}><${Icon} n="play" s=${14}/>Explore demo</button></div></div>
+  <div class="card" style=${{padding:14}}><svg viewBox="0 0 680 400" style=${{width:'100%',display:'block'}} role="img" aria-label="Cameras feed an AI engine that answers in a chat interface"><g class="flow">
+  ${[0,1,2,3,4].map(i=>html`<g key=${i}><rect x="14" y=${24+i*72} width="92" height="54" rx="9" fill="#0b1322" stroke="rgba(130,170,230,.3)"/><circle cx="30" cy=${51+i*72} r="6" fill="#22d3ee" opacity=".85"/><rect x="44" y=${40+i*72} width="52" height="22" rx="4" fill="#142238"/><text x="60" y=${55+i*72} fontSize="9" fill="#8a9bb6" fontFamily="JetBrains Mono, monospace">CAM-0${i+1}</text><path class="f" d=${`M106 ${51+i*72}C190 ${51+i*72} 190 200 262 200`} fill="none" stroke="#22d3ee" strokeWidth="1.6" opacity=".75"/></g>`)}
+  <g><rect x="262" y="140" width="140" height="120" rx="18" fill="#0d1a2e" stroke="#22d3ee" strokeWidth="1.5"/><text x="332" y="188" textAnchor="middle" fontSize="13" fill="#e7eef9" fontFamily="Sora, sans-serif" fontWeight="600">AI engine</text><text x="332" y="208" textAnchor="middle" fontSize="10" fill="#8a9bb6" fontFamily="JetBrains Mono, monospace">detect · track · embed</text><text x="332" y="228" textAnchor="middle" fontSize="10" fill="#8a9bb6" fontFamily="JetBrains Mono, monospace">index · re-identify</text></g>
+  <path class="f" d="M402 200C470 200 470 200 500 200" fill="none" stroke="#4f8cff" strokeWidth="1.8"/>
+  <g><rect x="500" y="40" width="166" height="320" rx="16" fill="#0b1322" stroke="rgba(130,170,230,.3)"/><rect x="540" y="64" width="112" height="34" rx="10" fill="#17304f"/><text x="548" y="85" fontSize="10" fill="#cfe6ff" fontFamily="Sora, sans-serif">Did a red car enter?</text><rect x="514" y="112" width="138" height="104" rx="10" fill="#10203a" stroke="#22d3ee" strokeOpacity=".5"/><text x="524" y="132" fontSize="9.5" fill="#7ee8bd" fontFamily="JetBrains Mono, monospace">MATCH FOUND</text><text x="524" y="152" fontSize="10" fill="#e7eef9" fontFamily="JetBrains Mono, monospace">CAM-01 · 09:14:32</text><rect x="524" y="162" width="118" height="42" rx="5" fill="#142238"/><rect x="560" y="176" width="40" height="18" rx="4" fill="#d23b32"/><rect x="556" y="171" width="48" height="28" fill="none" stroke="#22d3ee"/><rect x="540" y="232" width="112" height="30" rx="10" fill="#17304f"/><text x="548" y="251" fontSize="10" fill="#cfe6ff" fontFamily="Sora, sans-serif">Where did it go?</text><text x="524" y="292" fontSize="10" fill="#8a9bb6" fontFamily="JetBrains Mono, monospace">CAM-01 → 03 → 05 → 08</text><rect x="514" y="316" width="138" height="30" rx="15" fill="none" stroke="rgba(130,170,230,.35)"/></g></g></svg></div></div>
+  <div class="feat">${feats.map(f=>html`<div key=${f[1]} class="card col" style=${{gap:8}}><div class="logo" style=${{width:36,height:36,background:'rgba(34,211,238,.12)',color:'var(--cy)',border:'1px solid var(--line2)'}}><${Icon} n=${f[0]} s=${18}/></div><h3>${f[1]}</h3><span style=${{color:'var(--mut)'}}>${f[2]}</span></div>`)}</div></div>`;
+}
+
+/* ---------- camera card ---------- */
+function CamCard({cam,big}){
+  const A=useApp();const online=cam.status==='online';
+  const ents=online?liveEnts(cam.camera_id,A.tick):[];const vis=ents.filter(visible);
+  const pc=vis.filter(e=>e.k==='person').length,vc=vis.filter(e=>isVeh(e.k)).length;
+  const conf=vis.length?Math.round(vis.reduce((a,e)=>a+e.conf,0)/vis.length):0;
+  const z=A.zones.filter(z=>z.camera_id===cam.camera_id);
+  const alerting=A.hl&&A.hl.cam===cam.camera_id;
+  const body=html`<${Frame} cam=${cam} ents=${vis.map(e=>Object.assign({},e,{bag:e.k==='person'&&cam.camera_id==='CAM-04'}))} zones=${big?z:null} boxes=${online} hl=${alerting} priv=${A.priv}>
+  ${!online?html`<div class="boot"><div><${Icon} n="alert" s=${22}/><br/>NO SIGNAL</div></div>`:null}
+  ${online&&!A.streams?html`<div class="boot"><div><div class="spin"></div>CONNECTING ${cam.camera_id}…</div></div>`:null}
+  <div class="hud tl">${cam.camera_id} · ${cam.name.toUpperCase()}</div><div class="hud tr">${online&&A.streams?html`<span class="live"><i></i>LIVE</span>`:html`<span style=${{color:'#8a9bb6'}}>OFFLINE</span>`}</div>
+  <div class="hud bl">${new Date().toISOString().slice(0,10)} ${hms2(A.clock)}</div><div class="hud br">${A.settings.blurFaces?'FACES BLURRED':''}</div><//>`;
+  return html`<div class=${'cam'+(alerting?' alerting':'')} onClick=${()=>A.openCam(cam.camera_id)} role="button" tabIndex="0" onKeyDown=${e=>e.key==='Enter'&&A.openCam(cam.camera_id)} aria-label=${'Open '+cam.name}>
+  ${body}<div class="meta"><span class="row" style=${{gap:12}}><span><${Icon} n="user" s=${12}/> Person: <b style=${{color:'var(--tx)'}}>${A.streams?pc:0}</b></span><span><${Icon} n="car" s=${12}/> Vehicle: <b style=${{color:'var(--tx)'}}>${A.streams?vc:0}</b></span></span><span class="mono">${online&&A.streams?conf+'% conf':'—'}</span></div></div>`;
+}
+
+/* ---------- dashboard ---------- */
+function Dashboard(){
+  const A=useApp();const online=A.cams.filter(c=>c.status==='online').length;
+  const crit=A.alerts.filter(a=>a.severity==='critical').length;
+  const stats=[[A.cams.length,'Connected cameras'],[12482+A.tick*3,'Objects detected'],[A.events.length-24+347,'Events indexed'],[24,'Active investigations'],[crit,'Critical alerts',1],[98.4,'AI confidence',0,1]];
+  return html`<div class="page"><${Head} title="AI Security Command Center" sub="Real-time multi-camera intelligence and investigation"><button class="btn primary" onClick=${A.startDemo}><${Icon} n="play" s=${14}/>Start demo</button><//>
+  <div class="g6">${stats.map(s=>html`<div key=${s[1]} class=${'card stat'+(s[2]?' crit':'')}><span class="n"><${Counter} v=${s[0]} dec=${s[3]?1:0} suf=${s[3]?'%':''}/></span><span class="l">${s[1]}</span></div>`)}</div>
+  <div class="row sb"><h2>Live cameras</h2><button class="btn sm" onClick=${()=>A.go('live')}>Open camera wall</button></div>
+  <div class="g4">${A.cams.map(c=>html`<${CamCard} key=${c.camera_id} cam=${c}/>`)}</div>
+  <div class="g3"><div class="card col"><div class="row sb"><h2>Recent alerts</h2><button class="btn sm" onClick=${()=>A.go('alerts')}>All alerts</button></div>
+  ${A.alerts.slice(0,4).map(a=>html`<div key=${a.alert_id} class="mem" style=${{cursor:'pointer'}} onClick=${()=>A.openEv(A.evOf(a))}><div><b>${a.rule}</b><div style=${{fontSize:12,color:'var(--mut)'}} class="mono">${a.camera_id} · ${t12(a.t,false)} · ${a.confidence}%</div></div><${Sev} s=${a.severity}/></div>`)}</div>
+  <${StatusPanel}/>
+  <div class="card col"><h2>Ask your cameras</h2><div class="ask"><input aria-label="Ask a question" placeholder="Ask anything about your CCTV footage…" value=${A.draft} onChange=${e=>A.setDraft(e.target.value)} onInput=${e=>A.setDraft(e.target.value)} onKeyDown=${e=>{if(e.key==='Enter'){A.go('search');A.ask(A.draft)}}}/><button class="btn primary icon" aria-label="Search" onClick=${()=>{A.go('search');A.ask(A.draft)}}><${Icon} n="search"/></button></div>
+  <span class="label">Try one of these</span>${['Did a red car enter the main gate?','Find a person carrying a large black bag.','Show all vehicles that entered today.'].map(q=>html`<button key=${q} class="btn sm" style=${{justifyContent:'flex-start',textAlign:'left'}} onClick=${()=>{A.go('search');A.ask(q)}}>${q}</button>`)}</div></div></div>`;
+}
+function LiveCameras(){
+  const A=useApp();const [cols,setCols]=useState(4);
+  return html`<div class="page"><${Head} title="Live cameras" sub="All streams with detection overlays. Imagery is simulated placeholder footage."><select aria-label="Grid size" value=${cols} onChange=${e=>setCols(+e.target.value)}><option value="2">2 columns</option><option value="3">3 columns</option><option value="4">4 columns</option></select><//>
+  <div style=${{display:'grid',gap:14,gridTemplateColumns:`repeat(auto-fill,minmax(${cols===2?420:cols===3?300:230}px,1fr))`}}>${A.cams.map(c=>html`<${CamCard} key=${c.camera_id} cam=${c}/>`)}</div></div>`;
+}
+
+/* ---------- AI search / chat ---------- */
+const EXAMPLES=['Did a red car enter the main gate?','Find a person carrying a large black bag.','Show people entering the restricted zone.','Where did the red car go after leaving the main gate?','What happened near the parking area at 8 PM?','Show all vehicles that entered today.'];
+function ChatMsg({m}){
+  const A=useApp();const d=m.data||{};
+  if(m.role==='user')return html`<div class="bub u">${m.text}</div>`;
+  return html`<div class="bub a"><div class="row" style=${{gap:8,marginBottom:6}}><span class="logo" style=${{width:22,height:22,borderRadius:7}}><${Icon} n="eye" s=${13} sw=${2.2}/></span><span class="label">VisionGuard</span></div>
+  <div>${m.text}</div>
+  ${m.kind==='match'?html`<div>${d.chips&&d.chips.length?html`<div class="row" style=${{gap:6,marginTop:8}}>${d.chips.map(c=>html`<span key=${c[0]} class="chip on"><${Icon} n="check" s=${11}/>${c[0]}: ${c[1]}</span>`)}</div>`:null}${d.events.slice(0,3).map(e=>html`<${EvidenceCard} key=${e.event_id} ev=${e}/>`)}
+  ${d.events.length>3?html`<div class="row sb" style=${{marginTop:10}}><span class="label">+${d.events.length-3} more matching events</span><button class="btn sm" onClick=${()=>A.go('investigation')}>Open in investigation</button></div>`:null}<p class="sub" style=${{fontSize:12.5}}><b style=${{color:'var(--tx)'}}>Why this result:</b> ${d.explain}</p></div>`:null}
+  ${m.kind==='none'&&d.chips&&d.chips.length?html`<div class="row" style=${{gap:6,marginTop:8}}>${d.chips.map(c=>html`<span key=${c[0]} class="chip">${c[0]}: ${c[1]}</span>`)}</div>`:null}
+  ${m.kind==='journey'?html`<div class="col" style=${{marginTop:10}}><${JourneyChain} track=${d.track_id} events=${A.events} cams=${A.cams}/><div class="row"><button class="btn primary sm" onClick=${()=>A.go('tracking',{track:d.track_id})}><${Icon} n="route" s=${13}/>Open full journey</button></div></div>`:null}
+  ${m.kind==='standing'?html`<div class="card flat col" style=${{marginTop:10,gap:8}}><div class="row sb"><b>Standing query created ✓</b><span class="chip ok"><i class="dot"></i>ACTIVE</span></div><div class="kv"><span>Object</span><span>${d.object}</span><span>Event</span><span>${d.event}</span><span>Zone</span><span>${d.zone}${d.camera_id?' → '+d.camera_id:''}</span><span>Time</span><span>${d.time}</span><span>Action</span><span>${d.action}</span></div><${Validation} conf=${93} settings=${A.settings}/><div class="row"><button class="btn sm" onClick=${()=>A.go('alerts')}>Manage smart alerts</button></div></div>`:null}
+  ${m.kind==='clarify'?html`<div class="card flat col" style=${{marginTop:10}}><div class="row" style=${{gap:8}}><${Icon} n="alert" c="#ffb020"/><b>Clarification required</b></div><span class="label">Which camera is the ${d.place}? I will ask only once.</span><div class="row" style=${{gap:8}}>${A.cams.map(c=>html`<button key=${c.camera_id} class=${'btn sm'+(d.selected===c.camera_id?' primary':'')} disabled=${!!d.selected} onClick=${()=>A.pickClarify(m,c.camera_id)}>${c.camera_id} — ${c.name}</button>`)}</div></div>`:null}
+  ${m.kind==='saveprompt'?html`<div class="row" style=${{marginTop:10}}>${d.state==='open'?html`<${React.Fragment}><button class="btn primary sm" onClick=${()=>A.confirmSave(m)}><${Icon} n="check" s=${13}/>Save to memory</button><button class="btn sm" onClick=${()=>A.confirmSave(m,true)}>Just this once</button><//>`:html`<span class=${'chip '+(d.state==='saved'?'ok':'')}>${d.state==='saved'?'✓ Saved to persistent memory':'Used for this question only'}</span>`}</div>`:null}</div>`;
+}
+function SearchPage(){
+  const A=useApp();const end=useRef(null);
+  useEffect(()=>{end.current&&end.current.scrollIntoView({block:'end',behavior:'smooth'})},[A.msgs.length,A.busy]);
+  return html`<div class="page"><${Head} title="Ask your cameras" sub="Search, understand, locate, verify, act. Every answer is grounded in a camera, a timestamp and evidence."/>
+  <div class="split"><div class="card col" style=${{gap:14}}>
+  <div class="ask"><button class="btn icon" aria-label="Voice input (not connected)" title="Voice input is not connected in this demo" onClick=${()=>A.toast({title:'Voice input is not connected',body:'Type your question instead. A speech-to-text service can be wired into this button.'})}><${Icon} n="mic"/></button><input aria-label="Ask a question" placeholder="Ask anything about your CCTV footage…" value=${A.draft} onInput=${e=>A.setDraft(e.target.value)} onChange=${e=>A.setDraft(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&A.ask(A.draft)}/><button class="btn primary" onClick=${()=>A.ask(A.draft)} disabled=${A.busy}><${Icon} n="send" s=${15}/>Search</button></div>
+  <div class="chat">${A.msgs.map(m=>html`<${ChatMsg} key=${m.id} m=${m}/>`)}${A.busy?html`<div class="bub a typing"><span></span><span></span><span></span></div>`:null}<div ref=${end}></div></div></div>
+  <div class="col"><div class="card col"><h2>Try asking</h2>${EXAMPLES.map(q=>html`<button key=${q} class="btn sm" style=${{justifyContent:'flex-start',textAlign:'left'}} onClick=${()=>A.ask(q)}>${q}</button>`)}</div>
+  <div class="card col"><div class="row sb"><h2>Memory in use</h2><button class="btn sm" onClick=${()=>A.go('memory')}>Manage</button></div>${A.memory.map(m=>html`<div key=${m.memory_id} class="row sb" style=${{fontSize:13}}><span>${m.key}</span><span class="mono arrow">→ ${m.camera_id}</span></div>`)}<span class="label">Ask about the Main Gate to see clarify-once in action.</span></div></div></div></div>`;
+}
+
+/* ---------- investigation ---------- */
+function Investigation(){
+  const A=useApp();const [f,setF]=useState({obj:'Any',color:'Any',loc:'Any Camera',time:'Today',event:'Any'});const [res,setRes]=useState(null);const [busy,setBusy]=useState(false);
+  const run=async()=>{setBusy(true);await sleep(450);setRes(await api.investigate(Object.assign({},f,{mem:A.memory}),A.events));setBusy(false)};
+  const sel=(k,opts)=>html`<div class="field"><span class="label">${cap(k==='loc'?'location':k)}</span><select value=${f[k]} onChange=${e=>setF(Object.assign({},f,{[k]:e.target.value}))}>${opts.map(o=>html`<option key=${o}>${o}</option>`)}</select></div>`;
+  const unmapped=f.loc!=='Any Camera'&&f.loc!=='Restricted Zone'&&!A.memory.some(m=>m.key===f.loc);
+  return html`<div class="page"><${Head} title="Investigation" sub="Combine object, colour, place, time and event filters. Reference time for relative windows is 09:30 AM in the demo dataset."/>
+  <div class="card col"><div class="row">${sel('obj',['Any','Person','Car','Truck','Bike','Bag'])}${sel('color',['Any','Red','Blue','Black','White'])}${sel('loc',['Any Camera','Main Gate','Parking Area','Lobby','Restricted Zone','Loading Area'])}${sel('time',['Last 5 minutes','Last hour','Today','Custom range'])}${sel('event',['Any','Entry','Exit','Loitering','Running','Crowd','Object Left','Restricted Zone Entry'])}</div>
+  ${unmapped?html`<span class="chip warn">${f.loc} is not in memory yet. Ask about it in AI Search to teach the system.</span>`:null}${f.time==='Custom range'?html`<span class="chip">Custom range is not wired up in the mock service. Showing all of today.</span>`:null}
+  <div><button class="btn primary" onClick=${run} disabled=${busy}><${Icon} n="search" s=${15}/>${busy?'Running…':'Run investigation'}</button></div></div>
+  ${res===null?html`<div class="card" style=${{textAlign:'center',color:'var(--mut)'}}>Choose filters and run an investigation to see matching events with their evidence.</div>`:
+  html`<div class="card col"><div class="row sb"><h2>${res.length} result${res.length===1?'':'s'}</h2><span class="label">Click a row to open the evidence viewer</span></div>${res.length?html`<div class="scroll-x"><table><thead><tr><th>Evidence</th><th>Camera</th><th>Timestamp</th><th>Object</th><th>Event</th><th>Confidence</th></tr></thead><tbody>${res.map(e=>html`<tr key=${e.event_id} class="clk" onClick=${()=>A.openEv(e)}><td style=${{width:130}}><${EvFrame} ev=${e} cams=${A.cams} hud=${false} priv=${A.priv}/></td><td><b>${e.camera_id}</b><div style=${{color:'var(--mut)',fontSize:12}}>${camName(e.camera_id,A.cams)}</div></td><td class="mono">${t12(e.t)}</td><td>${e.label}</td><td>${e.event_type}</td><td class="mono">${e.confidence}%</td></tr>`)}</tbody></table></div>`:html`<p class="sub">No events match this combination. Loosen one filter and run again.</p>`}</div>`}</div>`;
+}
+
+/* ---------- timeline ---------- */
+const evIcon=e=>e.event_type==='Restricted Zone Entry'||e.event_type==='Loitering'||e.event_type==='Crowd'?'alert':e.event_type==='Entry'?'arrow':e.event_type==='Exit'?'run':e.event_type==='Object Left'?'bag':e.object_type==='person'?'user':'car';
+const evCol=e=>['Restricted Zone Entry','Object Left'].includes(e.event_type)?'#ff5a4d':['Loitering','Crowd'].includes(e.event_type)?'#ffb020':e.object_type==='person'?'#22d3ee':'#4f8cff';
+function Timeline(){
+  const A=useApp();const [flt,setFlt]=useState('All');const [zoom,setZoom]=useState(1);const [part,setPart]=useState('morning');
+  const types=['All','Person','Vehicle','Alert','Entry','Exit','Object','Suspicious'];
+  const inPart=e=>part==='morning'?e.t<12*3600:e.t>=12*3600;
+  const list=A.events.filter(inPart).filter(e=>flt==='All'||(flt==='Person'&&e.object_type==='person')||(flt==='Vehicle'&&isVeh(e.object_type))||(flt==='Alert'&&['Restricted Zone Entry','Object Left'].includes(e.event_type))||(flt==='Entry'&&e.event_type.includes('Entry'))||(flt==='Exit'&&e.event_type==='Exit')||(flt==='Object'&&(e.object_type==='bag'||e.event_type==='Object Left'))||(flt==='Suspicious'&&['Loitering','Crowd','Restricted Zone Entry','Object Left'].includes(e.event_type))).sort((a,b)=>a.t-b.t);
+  const all=A.events.filter(inPart);const mn=Math.floor(Math.min(...all.map(e=>e.t))/300)*300-300,mx=Math.ceil(Math.max(...all.map(e=>e.t))/300)*300+300;
+  const ppm=6*zoom,wid=Math.max(700,(mx-mn)/60*ppm),lane=id=>+id.slice(-1)-1;
+  const ticks=[];for(let s=mn;s<=mx;s+=Math.max(300,Math.round(600/zoom/300)*300))ticks.push(s);
+  const rowRefs=useRef({});
+  useEffect(()=>{if(A.focusEv){const el=rowRefs.current[A.focusEv.event_id];el&&el.scrollIntoView({block:'center',behavior:'smooth'})}},[A.focusEv]);
+  return html`<div class="page"><${Head} title="Event timeline" sub="Every indexed event across all cameras. Click any event to open its evidence."><select aria-label="Day part" value=${part} onChange=${e=>setPart(e.target.value)}><option value="morning">Morning (before 12:00)</option><option value="evening">Evening (after 12:00)</option></select><div class="row" style=${{gap:8}}><span class="label">Zoom</span><input type="range" min="0.5" max="4" step="0.5" value=${zoom} onChange=${e=>setZoom(+e.target.value)} aria-label="Timeline zoom"/></div><//>
+  <div class="row" style=${{gap:6}}>${types.map(t=>html`<button key=${t} class=${'chip'+(flt===t?' on':'')} onClick=${()=>setFlt(t)}>${t}</button>`)}</div>
+  <div class="tlwrap"><div style=${{width:wid+60,position:'relative',height:8*34+44}}>
+  ${ticks.map(s=>html`<div key=${s} style=${{position:'absolute',left:30+(s-mn)/60*ppm,top:0,bottom:0,borderLeft:'1px solid rgba(130,170,230,.1)'}}><span class="mono" style=${{position:'absolute',top:4,left:4,fontSize:10,color:'var(--dim)'}}>${hms2(s).slice(0,5)}</span></div>`)}
+  ${A.cams.map((c,i)=>html`<div key=${c.camera_id} style=${{position:'absolute',left:0,right:0,top:30+i*34,height:34,borderTop:'1px solid rgba(130,170,230,.08)'}}><span class="mono" style=${{position:'sticky',left:6,fontSize:10,color:'var(--dim)',position:'absolute',top:9,left:6}}>${c.camera_id.slice(-2)}</span></div>`)}
+  ${list.map(e=>html`<button key=${e.event_id} title=${`${e.event_type} · ${e.camera_id} · ${t12(e.t)}`} aria-label=${`${e.event_type} ${e.camera_id} ${t12(e.t)}`} onClick=${()=>A.openEv(e)} style=${{position:'absolute',left:30+(e.t-mn)/60*ppm-11,top:30+lane(e.camera_id)*34+5,width:24,height:24,borderRadius:8,border:`1.5px solid ${evCol(e)}`,background:'#0b1324',color:evCol(e),display:'grid',placeItems:'center',padding:0,boxShadow:A.focusEv&&A.focusEv.event_id===e.event_id?'0 0 0 3px rgba(34,211,238,.4)':'none'}}><${Icon} n=${evIcon(e)} s=${13}/></button>`)}</div></div>
+  <div class="card col"><h2>${list.length} events</h2>${list.map(e=>html`<div key=${e.event_id} ref=${el=>{rowRefs.current[e.event_id]=el}} class="mem" style=${{cursor:'pointer',borderColor:A.focusEv&&A.focusEv.event_id===e.event_id?'var(--cy)':undefined}} onClick=${()=>A.openEv(e)}><div class="row" style=${{gap:12,flexWrap:'nowrap'}}><span style=${{color:evCol(e)}}><${Icon} n=${evIcon(e)} s=${18}/></span><div><b>${e.event_type==='Person detected'||e.event_type==='Vehicle detected'?e.event_type:`${e.label} · ${e.event_type}`}</b><div class="mono" style=${{fontSize:12,color:'var(--mut)'}}>${t12(e.t)} · ${e.camera_id} ${camName(e.camera_id,A.cams)} · ${e.confidence}%</div></div></div><span class="btn sm">Evidence</span></div>`)}</div></div>`;
+}
+
+/* ---------- cross-camera tracking ---------- */
+const PLAN={'CAM-01':[60,200],'CAM-02':[150,70],'CAM-03':[250,170],'CAM-04':[120,320],'CAM-05':[370,190],'CAM-06':[470,80],'CAM-07':[470,310],'CAM-08':[590,200]};
+function Tracking(){
+  const A=useApp();const [q,setQ]=useState('Track the red car');const id=A.trackId;
+  const trk=TRACKS0[id];const evs=A.events.filter(e=>e.track_id===id).sort((a,b)=>a.t-b.t);
+  const search=()=>{const t=q.toLowerCase();if(/red|car|sedan|vehicle/.test(t))A.setTrackId('CAR-008');else if(/bag|person|man|woman/.test(t))A.setTrackId('PER-114');else A.toast({title:'No identity found',body:'Try "Track the red car" or "Track the person with the black bag".'})};
+  const path=evs.map((e,i)=>(i?'L':'M')+PLAN[e.camera_id].join(' ')).join('');
+  const [all,setAll]=useState(false);
+  return html`<div class="page"><${Head} title="Cross-camera journey" sub="Re-identification links the same car or person across cameras."/>
+  <div class="ask"><input aria-label="Track a person or vehicle" value=${q} onInput=${e=>setQ(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&search()} placeholder="Track the red car"/><button class="btn primary" onClick=${search}><${Icon} n="route" s=${15}/>Track</button></div>
+  <div class="row">${Object.values(TRACKS0).map(t=>html`<button key=${t.id} class=${'chip'+(t.id===id?' on':'')} onClick=${()=>A.setTrackId(t.id)}>${t.id} · ${t.label}</button>`)}</div>
+  <div class="split"><div class="col"><div class="card row sb"><div><span class="label">Identity</span><h1 class="mono">${trk.id}</h1><div>${trk.label}</div></div><div style=${{textAlign:'right'}}><span class="label">Re-ID confidence</span><div class="stat"><span class="n" style=${{fontSize:30}}>${trk.conf}%</span></div></div></div>
+  <div class="card col"><h2>Reconstructed journey</h2><div class="scroll-x"><div class="row" style=${{flexWrap:'nowrap',alignItems:'stretch',gap:8}}>${evs.map((e,i)=>html`<div key=${e.event_id} class="row" style=${{flexWrap:'nowrap',gap:8}}><div class="card flat col" style=${{minWidth:190,gap:6,cursor:'pointer'}} onClick=${()=>A.openEv(e)}><span class="mono" style=${{color:'var(--cy)',fontSize:17,fontWeight:600}}>${hms2(e.t).slice(0,5)}</span><b>${e.camera_id}</b><span style=${{color:'var(--mut)',fontSize:12.5}}>${camName(e.camera_id,A.cams)}</span><${EvFrame} ev=${e} cams=${A.cams} hud=${false} priv=${A.priv}/><span class="label">${e.event_type} · ${e.confidence}%</span></div>${i<evs.length-1?html`<span class="arrow" style=${{fontSize:20}}>→</span>`:null}</div>`)}</div></div>
+  <div><button class="btn" onClick=${()=>setAll(true)}><${Icon} n="layers" s=${14}/>View all evidence</button></div></div></div>
+  <div class="card col"><h2>Site map</h2><svg viewBox="0 0 680 400" style=${{width:'100%',display:'block'}} role="img" aria-label="Schematic site map with the route drawn between cameras"><rect x="20" y="20" width="640" height="360" rx="14" fill="rgba(6,10,18,.6)" stroke="rgba(130,170,230,.2)"/><path d="M20 130H300M300 20V130M300 250H660M200 250V380" stroke="rgba(130,170,230,.18)" fill="none"/>
+  ${Object.entries(PLAN).map(([c,p])=>{const on=evs.some(e=>e.camera_id===c);return html`<g key=${c}><circle cx=${p[0]} cy=${p[1]} r=${on?11:7} fill=${on?'#22d3ee':'#16243b'} stroke=${on?'#22d3ee':'rgba(130,170,230,.4)'}/><text x=${p[0]} y=${p[1]+(on?-18:-13)} textAnchor="middle" fontSize="10" fill=${on?'#e7eef9':'#6b7d99'} fontFamily="JetBrains Mono, monospace">${c}</text></g>`})}
+  ${path?html`<g class="flow"><path class="f" d=${path} fill="none" stroke="#22d3ee" strokeWidth="2.5"/><circle r="6" fill="#ff5a4d"><animateMotion dur="7s" repeatCount="indefinite" path=${path}/></circle></g>`:null}</svg><span class="label">Camera positions are a schematic, not surveyed coordinates.</span></div></div>
+  ${all?html`<div class="veil" onClick=${()=>setAll(false)}><div class="modal" onClick=${e=>e.stopPropagation()}><div class="row sb" style=${{marginBottom:12}}><h2>All evidence · ${trk.id}</h2><button class="btn icon" aria-label="Close" onClick=${()=>setAll(false)}><${Icon} n="x"/></button></div><div class="g3">${evs.map(e=>html`<div key=${e.event_id} class="col" style=${{gap:6,cursor:'pointer'}} onClick=${()=>{setAll(false);A.openEv(e)}}><${EvFrame} ev=${e} cams=${A.cams} priv=${A.priv}/><span class="mono" style=${{fontSize:12}}>${e.camera_id} · ${t12(e.t)} · ${e.confidence}%</span></div>`)}</div></div></div>`:null}</div>`;
+}
+
+/* ---------- alerts ---------- */
+function AlertCard({a}){
+  const A=useApp();const ev=A.evOf(a);
+  return html`<div class=${'card col'+(a.severity==='critical'&&a.status!=='Resolved'?' hot':'')} style=${{gap:10}}><div class="row sb"><span class=${'chip '+(a.severity==='critical'?'red':'warn')}>${a.severity==='critical'?'🚨 CRITICAL ALERT':'WARNING'}</span><span class="mono label">${a.alert_id}</span></div><h2>${a.rule}</h2>
+  <div class="g2" style=${{gap:12}}><div class="col" style=${{gap:6}}><div class="kv"><span>Camera</span><span>${a.camera_id} — ${camName(a.camera_id,A.cams)}</span><span>Time</span><span class="mono">${t12(a.t)}</span><span>Confidence</span><span class="mono">${a.confidence}%</span><span>Status</span><span><${Stat} s=${a.status}/></span>${a.source?html`<${React.Fragment}><span>Rule</span><span>${a.source}</span><//>`:null}</div></div>${ev?html`<${EvFrame} ev=${ev} cams=${A.cams} priv=${A.priv}/>`:null}</div>
+  <div class="row"><button class="btn primary sm" onClick=${()=>A.openEv(ev)}>View evidence</button><button class="btn sm" onClick=${()=>A.openCam(a.camera_id)}>Open camera</button>${a.status==='New'?html`<button class="btn sm" onClick=${()=>A.setStatus(a.alert_id,'Investigating')}>Acknowledge</button>`:null}${a.status!=='Resolved'?html`<button class="btn sm" onClick=${()=>A.setStatus(a.alert_id,'Resolved')}>Resolve</button>`:null}</div></div>`;
+}
+function Alerts(){
+  const A=useApp();const [text,setText]=useState('Alert me if anyone enters the restricted zone after 8 PM.');const [last,setLast]=useState(null);
+  const [fs,setFs]=useState({sev:'All',st:'All',cam:'All',day:'All'});
+  const create=async()=>{const q=await api.parseStandingQuery(text,A.memory);if(q.place&&!q.camera_id){A.toast({title:`${q.place} is not mapped yet`,body:'Ask about it in AI Search to teach the system, then create the alert again.'});return}A.addSq(q);setLast(q)};
+  const active=A.alerts.filter(a=>a.status!=='Resolved');
+  const hist=A.alerts.filter(a=>(fs.sev==='All'||a.severity===fs.sev)&&(fs.st==='All'||a.status===fs.st)&&(fs.cam==='All'||a.camera_id===fs.cam)&&(fs.day==='All'||a.day===fs.day));
+  const types=[['Person',['Person enters restricted area','Unknown person detected','Person loitering']],['Vehicle',['Red car detected','Vehicle enters restricted area','Vehicle exits premises']],['Behavior',['Running','Falling','Crowd formation','Object left behind']],['Zone',['Entry','Exit','Unauthorized movement']]];
+  return html`<div class="page"><${Head} title="Real-time AI alerts" sub="Alerts arrive over a WebSocket-ready feed. In this demo they are simulated."><div class="row" style=${{gap:6}}><span class="label">Simulate</span><button class="btn sm danger" onClick=${()=>A.fire('zone')}>Restricted zone entry</button><button class="btn sm" onClick=${()=>A.fire('vehicle')}>Red vehicle</button><button class="btn sm" onClick=${()=>A.fire('loiter')}>Loitering</button><button class="btn sm" onClick=${()=>A.fire('left')}>Object left</button></div><//>
+  <div class="split"><div class="col"><h2>${active.length} active alert${active.length===1?'':'s'}</h2>${active.length?active.map(a=>html`<${AlertCard} key=${a.alert_id} a=${a}/>`):html`<div class="card" style=${{color:'var(--mut)'}}>No active alerts. Use Simulate to raise one.</div>`}</div>
+  <div class="col"><div class="card col"><h2>Create smart alert</h2><textarea rows="3" aria-label="Describe the alert in plain language" value=${text} onInput=${e=>setText(e.target.value)} style=${{resize:'vertical'}}></textarea><div><button class="btn primary" onClick=${create}><${Icon} n="zap" s=${14}/>Create alert</button></div>
+  ${last?html`<div class="card flat col" style=${{gap:8}}><div class="row sb"><b>Standing query created ✓</b><span class="chip ok"><i class="dot"></i>ACTIVE</span></div><div class="kv"><span>Object</span><span>${last.object}</span><span>Event</span><span>${last.event}</span><span>Zone</span><span>${last.zone}${last.camera_id?' → '+last.camera_id:''}</span><span>Time</span><span>${last.time}</span><span>Action</span><span>${last.action}</span></div></div>`:null}</div>
+  <div class="card col"><h2>Standing queries</h2>${A.sq.length?A.sq.map(q=>html`<div key=${q.sq_id} class="mem"><div style=${{minWidth:0}}><div style=${{fontSize:13}}>${q.text}</div><span class="label">${q.object} · ${q.event} · ${q.zone} · ${q.time}</span></div><div class="row" style=${{flexWrap:'nowrap'}}><${Toggle} on=${q.active} set=${v=>A.patchSq(q.sq_id,{active:v})} label="Toggle standing query"/><button class="btn icon sm" aria-label="Delete standing query" onClick=${()=>A.delSq(q.sq_id)}><${Icon} n="trash" s=${14}/></button></div></div>`):html`<span class="sub">No standing queries yet.</span>`}</div>
+  <${Validation} conf=${93} settings=${A.settings}/>
+  <div class="card col"><h2>Supported alert types</h2>${types.map(t=>html`<div key=${t[0]}><span class="label">${t[0]} alerts</span><div class="row" style=${{gap:6,marginTop:4}}>${t[1].map(x=>html`<span key=${x} class="chip">${x}</span>`)}</div></div>`)}</div></div></div>
+  <div class="card col"><div class="row sb"><h2>Alert history</h2><div class="row" style=${{gap:8}}>
+  <select aria-label="Severity" value=${fs.sev} onChange=${e=>setFs({...fs,sev:e.target.value})}><option value="All">All severities</option><option value="critical">Critical</option><option value="warning">Warning</option></select>
+  <select aria-label="Status" value=${fs.st} onChange=${e=>setFs({...fs,st:e.target.value})}><option>All</option><option>New</option><option>Investigating</option><option>Resolved</option></select>
+  <select aria-label="Camera" value=${fs.cam} onChange=${e=>setFs({...fs,cam:e.target.value})}><option value="All">All cameras</option>${A.cams.map(c=>html`<option key=${c.camera_id}>${c.camera_id}</option>`)}</select>
+  <select aria-label="Date" value=${fs.day} onChange=${e=>setFs({...fs,day:e.target.value})}><option value="All">Any date</option><option value="today">Today</option><option value="yesterday">Yesterday</option></select></div></div>
+  <div class="scroll-x"><table><thead><tr><th>Alert ID</th><th>Type</th><th>Severity</th><th>Camera</th><th>Time</th><th>Confidence</th><th>Status</th><th>Evidence</th></tr></thead><tbody>${hist.map(a=>html`<tr key=${a.alert_id} class="clk" onClick=${()=>A.openEv(A.evOf(a))}><td class="mono">${a.alert_id}</td><td>${a.rule}</td><td><${Sev} s=${a.severity}/></td><td class="mono">${a.camera_id}</td><td class="mono">${t12(a.t,false)}</td><td class="mono">${a.confidence}%</td><td><${Stat} s=${a.status}/></td><td style=${{width:96}}><${EvFrame} ev=${A.evOf(a)} cams=${A.cams} hud=${false} priv=${A.priv}/></td></tr>`)}</tbody></table></div>${hist.length?null:html`<span class="sub">No alerts match these filters.</span>`}</div></div>`;
+}
+
+/* ---------- zones ---------- */
+function Zones(){
+  const A=useApp();const [cid,setCid]=useState('CAM-06');const [sel,setSel]=useState('Z2');const [edit,setEdit]=useState(false);const svgRef=useRef(null);const drag=useRef(null);
+  const cam=A.cams.find(c=>c.camera_id===cid)||A.cams[0];const zs=A.zones.filter(z=>z.camera_id===cid);const z=zs.find(x=>x.id===sel)||zs[0];
+  useEffect(()=>{if(A.focusCam){setCid(A.focusCam);const f=A.zones.find(x=>x.camera_id===A.focusCam);f&&setSel(f.id)}},[A.focusCam]);
+  const toPt=e=>{const r=svgRef.current.getBoundingClientRect();return [Math.max(0,Math.min(640,(e.clientX-r.left)/r.width*640)),Math.max(0,Math.min(360,(e.clientY-r.top)/r.height*360))]};
+  const upd=(id,p)=>A.setZones(A.zones.map(x=>x.id===id?{...x,...p}:x));
+  const add=()=>{const id='Z'+Date.now()%100000;A.setZones([...A.zones,{id,camera_id:cid,name:'New zone',type:'custom',pts:[[200,140],[420,140],[420,320],[200,320]],rule:''}]);setSel(id);setEdit(true)};
+  const ents=A.streams?liveEnts(cid,A.tick).filter(visible):[];
+  return html`<div class="page"><${Head} title="Smart zones" sub="Draw zones on a camera view and attach alert rules to them."><select aria-label="Camera" value=${cid} onChange=${e=>{setCid(e.target.value);const f=A.zones.find(x=>x.camera_id===e.target.value);setSel(f?f.id:null)}}>${A.cams.map(c=>html`<option key=${c.camera_id} value=${c.camera_id}>${c.camera_id} — ${c.name}</option>`)}</select><button class="btn primary" onClick=${add}><${Icon} n="plus" s=${14}/>Create zone</button><//>
+  <div class="split"><div class="card col"><div style=${{position:'relative'}}><${Frame} cam=${cam} ents=${ents} zones=${[]} priv=${A.priv}><svg ref=${svgRef} viewBox="0 0 640 360" style=${{position:'absolute',inset:0,width:'100%',height:'100%',zIndex:3,touchAction:'none'}} onPointerMove=${e=>{if(drag.current!==null&&z){const p=toPt(e);upd(z.id,{pts:z.pts.map((q,i)=>i===drag.current?p:q)})}}} onPointerUp=${()=>{drag.current=null}}>
+  ${zs.map(q=>html`<g key=${q.id} onClick=${()=>setSel(q.id)} style=${{cursor:'pointer'}}><polygon points=${q.pts.map(p=>p.join(',')).join(' ')} fill=${ZC[q.type]} fillOpacity=${q.id===(z&&z.id)?.28:.14} stroke=${ZC[q.type]} strokeWidth=${q.id===(z&&z.id)?3:2}/><text x=${q.pts[0][0]+8} y=${q.pts[0][1]+18} fontSize="14" fill="#fff" fontFamily="Sora, sans-serif" fontWeight="600" style=${{paintOrder:'stroke'}} stroke="#000" strokeWidth="3">${q.name}</text></g>`)}
+  ${edit&&z?z.pts.map((p,i)=>html`<circle key=${i} cx=${p[0]} cy=${p[1]} r="8" fill="#fff" stroke=${ZC[z.type]} strokeWidth="3" style=${{cursor:'grab'}} onPointerDown=${e=>{e.target.setPointerCapture(e.pointerId);drag.current=i}}/>`):null}</svg><//></div>
+  <div class="row"><span class="chip ok">🟢 Safe zone</span><span class="chip red">🔴 Restricted zone</span><span class="chip warn">🟡 Loading zone</span><span class="chip on">Custom</span></div></div>
+  <div class="col"><div class="card col"><h2>Zones on ${cid}</h2>${zs.length?zs.map(q=>html`<div key=${q.id} class="mem" style=${{cursor:'pointer',borderColor:z&&z.id===q.id?ZC[q.type]:undefined}} onClick=${()=>setSel(q.id)}><span class="row" style=${{gap:8}}><i class="dot" style=${{background:ZC[q.type]}}></i>${q.name}</span><span class="label">${q.rule||'No rule'}</span></div>`):html`<span class="sub">No zones on this camera. Create one to start.</span>`}</div>
+  ${z?html`<div class="card col"><h2>Edit zone</h2><div class="field"><span class="label">Name</span><input value=${z.name} onInput=${e=>upd(z.id,{name:e.target.value})}/></div><div class="field"><span class="label">Type</span><select value=${z.type} onChange=${e=>upd(z.id,{type:e.target.value})}><option value="safe">Safe</option><option value="restricted">Restricted</option><option value="loading">Loading</option><option value="custom">Custom</option></select></div>
+  <div class="field"><span class="label">Alert rule</span><input value=${z.rule} onInput=${e=>upd(z.id,{rule:e.target.value})} placeholder="Alert when a person enters after 8 PM."/></div>
+  <div class="row"><button class=${'btn sm'+(edit?' primary':'')} onClick=${()=>setEdit(!edit)}><${Icon} n="edit" s=${13}/>${edit?'Done editing':'Edit polygon'}</button><button class="btn sm" onClick=${async()=>{const q=await api.parseStandingQuery(z.rule||'Alert when a person enters '+z.name,A.memory);q.zone=z.name;q.camera_id=cid;A.addSq(q);A.toast({title:'Smart alert activated',body:z.name+': '+q.object+' · '+q.event+' · '+q.time})}}><${Icon} n="zap" s=${13}/>Activate rule</button><button class="btn sm danger" onClick=${()=>{A.setZones(A.zones.filter(x=>x.id!==z.id));setSel(null)}}><${Icon} n="trash" s=${13}/>Delete</button></div>${edit?html`<span class="label">Drag the white handles on the camera view to reshape the zone.</span>`:null}</div>`:null}</div></div></div>`;
+}
+
+/* ---------- camera management ---------- */
+function CamMgmt(){
+  const A=useApp();const [m,setM]=useState(null);
+  const save=()=>{if(!m.name.trim())return;if(m.isNew){const n=A.cams.length+1;A.setCams([...A.cams,{camera_id:'CAM-'+pad(n),name:m.name,location:m.location||'Unassigned',scene:'gate',fps:+m.fps||25,status:m.status,last_update:'live'}])}else A.setCams(A.cams.map(c=>c.camera_id===m.camera_id?{...c,name:m.name,location:m.location,fps:+m.fps,status:m.status}:c));setM(null)};
+  return html`<div class="page"><${Head} title="Camera management" sub="Connect, edit and monitor camera streams."><button class="btn primary" onClick=${()=>setM({isNew:true,name:'',location:'',fps:25,status:'online'})}><${Icon} n="plus" s=${14}/>Add camera</button><//>
+  <div class="card scroll-x"><table><thead><tr><th>Camera ID</th><th>Name</th><th>Location</th><th>Status</th><th>FPS</th><th>Objects</th><th>Last update</th><th></th></tr></thead><tbody>${A.cams.map((c,i)=>{const on=c.status==='online';const n=on?liveEnts(c.camera_id,A.tick).filter(visible).length:0;return html`<tr key=${c.camera_id}><td class="mono"><b>${c.camera_id}</b></td><td>${c.name}</td><td style=${{color:'var(--mut)'}}>${c.location}</td><td><span class=${'chip '+(on?'ok':'red')}>${on?'🟢 Online':'🔴 Offline'}</span></td><td class="mono">${c.fps} FPS</td><td class="mono">${n} objects</td><td class="mono">${on?1+((A.tick+i)%4)+' sec ago':'—'}</td><td><div class="row" style=${{flexWrap:'nowrap',gap:6}}><button class="btn sm" onClick=${()=>setM({...c})}><${Icon} n="edit" s=${12}/>Edit</button><button class="btn sm danger" onClick=${()=>A.setCams(A.cams.filter(x=>x.camera_id!==c.camera_id))}><${Icon} n="trash" s=${12}/>Remove</button></div></td></tr>`})}</tbody></table></div>
+  <span class="label">Stream URL, credentials and RTSP settings belong to the backend. This form only edits what the frontend model holds.</span>
+  ${m?html`<div class="veil" onClick=${()=>setM(null)}><div class="modal sm col" onClick=${e=>e.stopPropagation()}><h2>${m.isNew?'Add camera':'Edit '+m.camera_id}</h2><div class="field"><span class="label">Name</span><input value=${m.name} onInput=${e=>setM({...m,name:e.target.value})} placeholder="Main Gate"/></div><div class="field"><span class="label">Location</span><input value=${m.location} onInput=${e=>setM({...m,location:e.target.value})} placeholder="North perimeter"/></div><div class="row"><div class="field"><span class="label">FPS</span><input type="number" value=${m.fps} onInput=${e=>setM({...m,fps:e.target.value})}/></div><div class="field"><span class="label">Status</span><select value=${m.status} onChange=${e=>setM({...m,status:e.target.value})}><option value="online">Online</option><option value="offline">Offline</option></select></div></div><div class="row"><button class="btn primary" onClick=${save}>Save camera</button><button class="btn" onClick=${()=>setM(null)}>Cancel</button></div></div></div>`:null}</div>`;
+}
+
+/* ---------- memory ---------- */
+function Memory(){
+  const A=useApp();const [m,setM]=useState(null);
+  const save=()=>{if(!m.key.trim())return;if(m.isNew)A.setMemory([...A.memory,{memory_id:'M'+Date.now(),key:m.key.trim(),value:m.camera_id,camera_id:m.camera_id,zone:m.zone||null,created_at:new Date().toISOString().slice(0,10)}]);else A.setMemory(A.memory.map(x=>x.memory_id===m.memory_id?{...x,key:m.key,value:m.camera_id,camera_id:m.camera_id,zone:m.zone||null}:x));setM(null)};
+  return html`<div class="page"><${Head} title="Environment memory" sub="Knowledge remains available after application restart."><span class="chip ok"><${Icon} n="db" s=${12}/>Persistent memory</span><button class="btn primary" onClick=${()=>setM({isNew:true,key:'',camera_id:'CAM-01',zone:''})}><${Icon} n="plus" s=${14}/>Add memory</button><//>
+  <div class="card col"><h2>Location mapping</h2><div class="g3">${A.memory.map(x=>html`<div key=${x.memory_id} class="card flat col" style=${{gap:8}}><div class="row sb"><b>${x.key}</b><span class="mono arrow">→ ${x.camera_id}</span></div><span class="label">${camName(x.camera_id,A.cams)}${x.zone?' · zone: '+x.zone:''} · saved ${x.created_at}</span><div class="row" style=${{gap:6}}><button class="btn sm" onClick=${()=>A.openCam(x.camera_id)}><${Icon} n="video" s=${12}/>Camera</button>${x.zone?html`<button class="btn sm" onClick=${()=>A.go('zones',{cam:x.camera_id})}><${Icon} n="poly" s=${12}/>Zone</button>`:null}<button class="btn sm" onClick=${()=>setM({...x})}><${Icon} n="edit" s=${12}/></button><button class="btn sm danger" aria-label="Delete memory" onClick=${()=>A.setMemory(A.memory.filter(y=>y.memory_id!==x.memory_id))}><${Icon} n="trash" s=${12}/></button></div></div>`)}</div>
+  ${A.memory.length?null:html`<span class="sub">Memory is empty. Ask about a place in AI Search and the system will ask once.</span>`}</div>
+  <div class="row"><button class="btn sm" onClick=${()=>{A.setMemory(MEM0);A.toast({title:'Memory reset',body:'Main Gate is unmapped again, so clarify-once will trigger on the next question.'})}}>Reset to defaults</button><span class="label">Stored in this browser only. A real deployment writes to the backend database.</span></div>
+  ${m?html`<div class="veil" onClick=${()=>setM(null)}><div class="modal sm col" onClick=${e=>e.stopPropagation()}><h2>${m.isNew?'Add memory':'Edit memory'}</h2><div class="field"><span class="label">Place name</span><input value=${m.key} onInput=${e=>setM({...m,key:e.target.value})} placeholder="Main Gate"/></div><div class="field"><span class="label">Camera</span><select value=${m.camera_id} onChange=${e=>setM({...m,camera_id:e.target.value})}>${A.cams.map(c=>html`<option key=${c.camera_id} value=${c.camera_id}>${c.camera_id} — ${c.name}</option>`)}</select></div><div class="field"><span class="label">Zone (optional)</span><input value=${m.zone||''} onInput=${e=>setM({...m,zone:e.target.value})} placeholder="Restricted Zone"/></div><div class="row"><button class="btn primary" onClick=${save}>Save memory</button><button class="btn" onClick=${()=>setM(null)}>Cancel</button></div></div></div>`:null}</div>`;
+}
+
+/* ---------- analytics (placeholder numbers: replace MEASURED with real results) ---------- */
+const MEASURED={retrieval:94.2,localization:96.1,queryTime:1.8,alertPrecision:92.4,source:'demo placeholder'};
+const AN={hours:['06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21'],objects:[210,480,920,1180,860,740,690,760,820,910,1040,1210,880,640,520,310],
+perCam:[['CAM-01',64],['CAM-02',41],['CAM-03',52],['CAM-04',23],['CAM-05',31],['CAM-06',58],['CAM-07',36],['CAM-08',42]],alertsDay:[['Mon',4],['Tue',6],['Wed',3],['Thu',7],['Fri',5],['Sat',2],['Sun',3]],
+succ:[88,90,91,93,92,94,95],lat:[2.4,2.2,2.1,2.0,1.9,1.8,1.8],journeys:[3,5,4,7,6,9,8]};
+function Analytics(){
+  const A=useApp();const M=MEASURED;
+  const kp=[['Retrieval accuracy',M.retrieval+'%'],['Localization accuracy',M.localization+'%'],['Average query time',M.queryTime+' sec'],['Alert precision',M.alertPrecision+'%']];
+  const Card=({t,children,sub})=>html`<div class="card col"><div><h3>${t}</h3>${sub?html`<span class="label">${sub}</span>`:null}</div>${children}</div>`;
+  return html`<div class="page"><${Head} title="Analytics" sub="Detection volume, search quality and alert performance."><span class="chip warn">Demo placeholders — replace MEASURED with real results</span><//>
+  <div class="g4">${kp.map(k=>html`<div key=${k[0]} class="card stat"><span class="n">${k[1]}</span><span class="l">${k[0]}</span></div>`)}</div>
+  <div class="g2"><${Card} t="Objects detected over time" sub="Per hour, all cameras"><${Spark} data=${AN.objects} labels=${AN.hours}/><//><${Card} t="Events per camera"><${Bars} data=${AN.perCam.map(p=>({l:p[0].slice(-2),v:p[1]}))}/><//></div>
+  <div class="g3"><${Card} t="Alerts per day"><${Bars} data=${AN.alertsDay.map(p=>({l:p[0],v:p[1],c:'#ffb020'}))} h=${160}/><//><${Card} t="Person vs vehicle detections"><${Donut} parts=${[{l:'Person',v:62,c:'#22d3ee'},{l:'Vehicle',v:34,c:'#4f8cff'},{l:'Other',v:4,c:'#8a9bb6'}]}/><//><${Card} t="Most active cameras"><${Bars} horizontal data=${AN.perCam.slice().sort((a,b)=>b[1]-a[1]).slice(0,5).map(p=>({l:p[0]+' '+camName(p[0],A.cams),v:p[1]}))}/><//></div>
+  <div class="g3"><${Card} t="Query success rate" sub="Percent, last 7 days"><${Spark} data=${AN.succ} color="#34d399" h=${150}/><//><${Card} t="Average query latency" sub="Seconds, last 7 days"><${Spark} data=${AN.lat} color="#ffb020" h=${150}/><//><${Card} t="Cross-camera journeys" sub="Per day"><${Bars} data=${AN.journeys.map((v,i)=>({l:'D'+(i+1),v}))} h=${150} color="#22d3ee"/><//></div>
+  <${Card} t="Alert accuracy" sub="Share of alerts confirmed by an analyst"><div class="row" style=${{gap:24}}><div style=${{flex:1,minWidth:220}}><div class="row sb"><span>Precision</span><b class="mono">${M.alertPrecision}%</b></div><div class="bar"><i style=${{width:M.alertPrecision+'%'}}></i></div></div><div style=${{flex:1,minWidth:220}}><div class="row sb"><span>Retrieval</span><b class="mono">${M.retrieval}%</b></div><div class="bar"><i style=${{width:M.retrieval+'%'}}></i></div></div><div style=${{flex:1,minWidth:220}}><div class="row sb"><span>Localization</span><b class="mono">${M.localization}%</b></div><div class="bar"><i style=${{width:M.localization+'%'}}></i></div></div></div><//></div>`;
+}
+
+/* ---------- settings ---------- */
+function Settings(){
+  const A=useApp();const S=A.settings;const set=(k,v)=>A.setSettings({...S,[k]:v});
+  const P=[['blurFaces','Blur faces'],['blurPlates','Blur license plates'],['local','Store data locally'],['noCloud','Disable cloud processing'],['autoDelete','Automatic evidence deletion']];
+  const on=P.every(p=>S[p[0]]);
+  const api2=[['GET','/api/cameras'],['GET','/api/events'],['POST','/api/query'],['POST','/api/standing-queries/parse'],['GET','/api/tracks/{id}'],['POST','/api/investigate'],['WS','/ws/alerts']];
+  return html`<div class="page"><${Head} title="Settings" sub="Privacy, alert thresholds and backend connection."><span class=${'chip '+(on?'ok':'warn')}><${Icon} n="shield" s=${12}/>Privacy mode: ${on?'ON':'PARTIAL'}</span><//>
+  <div class="g2"><div class="card col"><h2>Privacy</h2>${P.map(p=>html`<div key=${p[0]} class="row sb"><span>${p[1]}</span><${Toggle} on=${S[p[0]]} set=${v=>set(p[0],v)} label=${p[1]}/></div>`)}<span class="label">Face and plate blurring is applied to the simulated frames so you can see the effect.</span></div>
+  <div class="card col"><h2>Alert engine</h2><div class="row sb"><span>Play alert sound</span><${Toggle} on=${S.sound} set=${v=>set('sound',v)} label="Alert sound"/></div>
+  <div class="field"><div class="row sb"><span>Minimum confidence</span><b class="mono">${S.conf}%</b></div><input type="range" min="50" max="99" value=${S.conf} onInput=${e=>set('conf',+e.target.value)} aria-label="Minimum confidence"/></div>
+  <div class="field"><div class="row sb"><span>Consecutive frames required</span><b class="mono">${S.frames}</b></div><input type="range" min="1" max="15" value=${S.frames} onInput=${e=>set('frames',+e.target.value)} aria-label="Consecutive frames"/></div>
+  <div class="field"><div class="row sb"><span>Duplicate cooldown</span><b class="mono">${S.cooldown} s</b></div><input type="range" min="0" max="60" value=${S.cooldown} onInput=${e=>set('cooldown',+e.target.value)} aria-label="Cooldown seconds"/></div></div></div>
+  <div class="g2"><div class="card col"><div class="row sb"><h2>Backend connection</h2><span class=${'chip '+(CONFIG.USE_MOCK?'warn':'ok')}>${CONFIG.USE_MOCK?'Mock mode':'Live backend'}</span></div><div class="kv"><span>API base</span><span class="mono">${CONFIG.API_BASE}</span><span>WebSocket</span><span class="mono">${CONFIG.WS_URL}</span><span>USE_MOCK</span><span class="mono">${String(CONFIG.USE_MOCK)}</span></div><span class="sub">${CONFIG.USE_MOCK?"No backend found, so everything comes from the built-in mock service layer. Start the FastAPI server and reload to go live.":"Connected. Events, alerts, memory and standing queries are stored in the backend database. Text-to-filter parsing still runs in the browser."} Endpoints:</span><div class="col" style=${{gap:4}}>${api2.map(r=>html`<div key=${r[1]} class="mono" style=${{fontSize:12.5}}><span style=${{color:'var(--cy)',display:'inline-block',width:46}}>${r[0]}</span>${r[1]}</div>`)}</div><span class="label">Planned stack: FastAPI, OpenCV, YOLO, ByteTrack / BoT-SORT, CLIP / SigLIP embeddings, FAISS or Qdrant, SQLite / PostgreSQL.</span></div><${StatusPanel}/></div></div>`;
+}
+
+/* ---------- modals / toasts ---------- */
+function EvidenceViewer({ev,auto,onClose}){
+  const A=useApp();const [p,setP]=useState(0);const [play,setPlay]=useState(!!auto);
+  useEffect(()=>{if(!play)return;const i=setInterval(()=>setP(x=>{if(x>=10){setPlay(false);return 10}return +(x+.1).toFixed(1)}),100);return()=>clearInterval(i)},[play]);
+  const {cam,ents}=evEnts(ev,A.cams);const shift=play||p>0?(p-5)*7:0;
+  const e2=ents.map(e=>e.key==='main'?{...e,x:Math.max(0,Math.min(640-e.w,e.x+shift))}:e);
+  const b=ev.bbox;const z=A.zones.filter(z=>z.camera_id===ev.camera_id&&(ev.zone?z.name===ev.zone||z.type==='restricted':false));
+  const full=`${hms2(ev.t)}.${String(ev.ms||0).padStart(3,'0')}`;
+  const copy=async()=>{const j=JSON.stringify({event_id:ev.event_id,camera_id:ev.camera_id,timestamp:full,detection:ev.label,confidence:ev.confidence,bounding_box:b},null,2);try{await navigator.clipboard.writeText(j);A.toast({title:'Evidence manifest copied',body:'Frame and clip files are not generated in demo mode.'})}catch(e){A.toast({title:'Download unavailable in demo',body:'Evidence files are produced by the backend. Manifest: '+ev.event_id+' · '+ev.camera_id+' · '+full})}};
+  return html`<div class="veil" onClick=${onClose}><div class="modal col" onClick=${e=>e.stopPropagation()} role="dialog" aria-label="Evidence viewer"><div class="row sb"><h2>Evidence viewer</h2><button class="btn icon" aria-label="Close" onClick=${onClose}><${Icon} n="x"/></button></div>
+  <div class="trip"><div><small>CAMERA</small><b style=${{fontSize:18}}>${ev.camera_id}</b><br/><span style=${{fontSize:12,color:'var(--mut)'}}>${camName(ev.camera_id,A.cams)}</span></div><div><small>TIMESTAMP</small><b style=${{fontSize:18}}>${full}</b></div><div><small>EVIDENCE</small><b style=${{fontSize:18}}>${ev.label}</b><br/><span style=${{fontSize:12,color:'var(--mut)'}}>${ev.confidence}% confidence</span></div></div>
+  <${Frame} cam=${cam} ents=${e2} zones=${z} priv=${A.priv}><div class="hud tl">${ev.camera_id} · ${full}</div><div class="hud tr">${play?html`<span class="live"><i></i>CLIP ${p.toFixed(1)}s / 10s</span>`:'FRAME'}</div><div class="hud bl">SIMULATED IMAGERY</div><//>
+  <div class="bar" style=${{height:8}}><i style=${{width:p*10+'%'}}></i></div>
+  <div class="g2"><div class="kv"><span>Detection</span><span>${ev.label}</span><span>Event</span><span>${ev.event_type}</span><span>Confidence</span><span class="mono">${ev.confidence}%</span><span>Track</span><span class="mono">${ev.track_id||'—'}</span><span>Event ID</span><span class="mono">${ev.event_id}</span></div><div class="kv"><span>Bounding box</span><span class="mono">x: ${b.x} · y: ${b.y}</span><span></span><span class="mono">width: ${b.w} · height: ${b.h}</span></div></div>
+  <div class="row"><button class="btn primary" onClick=${()=>{setP(0);setPlay(true)}}><${Icon} n="play" s=${14}/>Play 10 sec clip</button><button class="btn" onClick=${()=>{onClose();A.go('timeline',{ev})}}>Open full timeline</button><button class="btn" onClick=${()=>{onClose();A.openCam(ev.camera_id)}}>Open camera</button><button class="btn" onClick=${copy}><${Icon} n="download" s=${14}/>Download evidence</button></div></div></div>`;
+}
+function CamModal({id,onClose}){
+  const A=useApp();const cam=A.cams.find(c=>c.camera_id===id);if(!cam)return null;
+  const z=A.zones.filter(z=>z.camera_id===id);
+  return html`<div class="veil" onClick=${onClose}><div class="modal col" onClick=${e=>e.stopPropagation()} role="dialog" aria-label=${cam.name}><div class="row sb"><div><h2>${cam.camera_id} — ${cam.name}</h2><span class="sub">${cam.location} · ${cam.fps} FPS</span></div><button class="btn icon" aria-label="Close" onClick=${onClose}><${Icon} n="x"/></button></div><${CamCard} cam=${cam}/>
+  <div class="row"><button class="btn" onClick=${()=>{onClose();A.go('zones',{cam:id})}}><${Icon} n="poly" s=${14}/>${z.length} zone${z.length===1?'':'s'}</button><button class="btn" onClick=${()=>{onClose();A.ask('What happened at '+cam.name.toLowerCase()+'?');A.go('search')}}>Ask about this camera</button></div></div></div>`;
+}
+function Toasts(){
+  const A=useApp();
+  return html`<div class="toasts" aria-live="polite">${A.toasts.map(t=>html`<div key=${t.id} class=${'toast'+(t.kind==='alert'?' alert':'')}><div class="row sb"><b>${t.kind==='alert'?'🚨 NEW ALERT':t.title}</b><button class="btn icon sm" aria-label="Dismiss" onClick=${()=>A.dismiss(t.id)}><${Icon} n="x" s=${12}/></button></div>${t.kind==='alert'?html`<div style=${{marginTop:4}}><b>${t.title}</b><div class="mono" style=${{fontSize:12,color:'var(--mut)'}}>${t.body}</div><div class="row" style=${{marginTop:8}}><button class="btn sm primary" onClick=${()=>{A.dismiss(t.id);A.openEv(t.ev)}}>View evidence</button><button class="btn sm" onClick=${()=>{A.dismiss(t.id);A.go('alerts')}}>Alerts</button></div></div>`:html`<div style=${{fontSize:13,color:'var(--mut)',marginTop:3}}>${t.body}</div>`}</div>`)}</div>`;
+}
+
+/* ---------- app shell ---------- */
+const NAV=[['dashboard','Dashboard','grid'],['live','Live Cameras','video'],['search','AI Search','search'],['investigation','Investigation','doc'],['timeline','Timeline','clock'],['tracking','Cross-Camera Tracking','route'],['alerts','Alerts','bell'],['zones','Zones','poly'],['cameras','Camera Management','camera'],['memory','Memory','db'],['analytics','Analytics','chart'],['settings','Settings','sliders']];
+const PRESETS={
+zone:{rule:'Person entered Restricted Zone',cam:'CAM-06',obj:'person',type:'Restricted Zone Entry',zone:'Restricted Zone',sev:'critical',conf:93,label:'Person',color:'grey',bbox:{x:330,y:150,w:72,h:172}},
+vehicle:{rule:'Red vehicle detected',cam:'CAM-01',obj:'car',type:'Vehicle detected',sev:'warning',conf:94,label:'Red Sedan',color:'red',bbox:{x:412,y:218,w:183,h:126},track:'CAR-008'},
+loiter:{rule:'Person loitering',cam:'CAM-04',obj:'person',type:'Loitering',sev:'warning',conf:87,label:'Person',color:'grey',bbox:{x:250,y:150,w:68,h:164}},
+left:{rule:'Object left behind',cam:'CAM-07',obj:'bag',type:'Object Left',sev:'critical',conf:84,label:'Black Bag',color:'black',bbox:{x:300,y:290,w:62,h:50},zone:'Loading Area'}};
+function beep(){try{const C=new (window.AudioContext||window.webkitAudioContext)();const o=C.createOscillator(),g=C.createGain();o.type='sine';o.frequency.value=880;g.gain.value=.04;o.connect(g);g.connect(C.destination);o.start();o.stop(C.currentTime+.18)}catch(e){}}
+
+function App(){
+  const [view,setView]=useState('landing');const [page,setPage]=useState('dashboard');const [nav,setNav]=useState(false);
+  const [tick,setTick]=useState(0);const [clock,setClock]=useState(nowSec());
+  const [cams,setCams]=useState(()=>JSON.parse(JSON.stringify(CAMS0)));
+  const [events,setEvents]=useState(EVENTS0);const [alerts,setAlerts]=useState(ALERTS0);
+  const [memory,setMemory]=useState(()=>store.get('memory',MEM0));const [zones,setZones]=useState(()=>store.get('zones',ZONES0));
+  const [sq,setSq]=useState(()=>store.get('sq',[]));const [settings,setSettings]=useState(()=>Object.assign({},SET0,store.get('settings',{})));
+  const [msgs,setMsgs]=useState([{id:'m0',role:'ai',kind:'text',text:'Ask me about any camera in plain language. I will answer with the camera, the timestamp and the evidence. Try "Did a red car enter the main gate?"'}]);
+  const [draft,setDraft]=useState('');const [busy,setBusy]=useState(false);const [entity,setEntity]=useState(null);
+  const [viewer,setViewer]=useState(null);const [camModal,setCamModal]=useState(null);const [toasts,setToasts]=useState([]);const [hl,setHl]=useState(null);
+  const [streams,setStreams]=useState(true);const [demo,setDemo]=useState(null);const [focusEv,setFocusEv]=useState(null);const [focusCam,setFocusCam]=useState(null);const [trackId,setTrackId]=useState('CAR-008');
+  const Rf=useRef({});Rf.current={memory,events,alerts,sq,settings,msgs,entity};
+  const abort=useRef(false);const feed=useMemo(()=>new AlertFeed(),[]);
+
+  const [live,setLive]=useState(false);const ready=useRef(false);
+  useEffect(()=>{(async()=>{
+    if(!(await probeBackend()))return;
+    try{const [c,e,a,m,q]=await Promise.all([api.getCameras(),api.getEvents(),http('/alerts'),http('/memory'),http('/standing-queries')]);
+      setCams(c);setEvents(e.map(x=>({...x,tags:x.tags||[]})));setAlerts(a.map(x=>({...x,createdAt:x.created_at||0})));setMemory(m);setSq(q);ready.current=true;setLive(true);feed.connect()}
+    catch(err){CONFIG.USE_MOCK=true}})()},[]);
+  useEffect(()=>{if(live&&ready.current)http('/memory',{method:'PUT',body:JSON.stringify(memory)}).catch(()=>{})},[memory,live]);
+  useEffect(()=>{if(live&&ready.current)http('/standing-queries',{method:'PUT',body:JSON.stringify(sq)}).catch(()=>{})},[sq,live]);
+  useEffect(()=>{const i=setInterval(()=>{setTick(t=>t+1);setClock(nowSec())},1000);return()=>clearInterval(i)},[]);
+  useEffect(()=>store.set('memory',memory),[memory]);useEffect(()=>store.set('zones',zones),[zones]);useEffect(()=>store.set('sq',sq),[sq]);useEffect(()=>store.set('settings',settings),[settings]);
+
+  const toast=useCallback(t=>{const id=Math.random().toString(36).slice(2);setToasts(x=>[...x.slice(-3),{id,...t}]);setTimeout(()=>setToasts(x=>x.filter(y=>y.id!==id)),t.kind==='alert'?12000:5000)},[]);
+  const dismiss=id=>setToasts(x=>x.filter(y=>y.id!==id));
+  const go=(p,o={})=>{setPage(p);setNav(false);if(o.ev)setFocusEv(o.ev);if(o.cam)setFocusCam(o.cam);if(o.track)setTrackId(o.track);window.scrollTo({top:0})};
+  const evOf=a=>Rf.current.events.find(e=>e.event_id===a.event_id)||EVENTS0[0];
+  const addMsg=m=>{const id=Math.random().toString(36).slice(2);setMsgs(x=>[...x,{id,...m}]);return id};
+  const patchMsg=(id,p)=>setMsgs(x=>x.map(m=>m.id===id?{...m,...p}:m));
+
+  const ask=async(text,opt={})=>{
+    text=(text||'').trim();if(!text)return;setDraft('');if(!opt.silent)addMsg({role:'user',text,kind:'text'});setBusy(true);await sleep(650);
+    try{const R=Rf.current;const r=await api.query({text,memory:R.memory,ctx:{entity:R.entity,events:R.events},temp:opt.temp||{}});
+      if(r.kind==='standing')setSq(x=>[...x,r.data]);if(r.entity)setEntity(r.entity);addMsg({role:'ai',text:r.text,kind:r.kind,data:r.data})}
+    catch(e){addMsg({role:'ai',kind:'text',text:'Something went wrong while searching. Try the question again.'})}
+    setBusy(false)};
+  const pickClarify=(m,cam)=>{const d=m.data;patchMsg(m.id,{data:{...d,selected:cam}});addMsg({role:'ai',kind:'saveprompt',text:`Got it. I'll remember that ${cam} represents the ${d.place}.`,data:{place:d.place,cam,pending:d.pending,state:'open'}})};
+  const confirmSave=async(m,once)=>{const d=m.data;patchMsg(m.id,{data:{...d,state:once?'once':'saved'}});
+    if(!once)setMemory(x=>x.filter(y=>y.key!==d.place).concat({memory_id:'M'+Date.now(),key:d.place,value:d.cam,camera_id:d.cam,zone:d.place==='Restricted Zone'?d.place:null,created_at:new Date().toISOString().slice(0,10)}));
+    await ask(d.pending,{silent:true,temp:{[d.place]:d.cam}})};
+
+  const handleIncoming=useCallback(({alert,event})=>{
+    if(Rf.current.alerts.some(a=>a.alert_id===alert.alert_id))return;
+    setEvents(x=>[...x,event]);setAlerts(x=>[alert,...x]);setHl({cam:alert.camera_id});setTimeout(()=>setHl(h=>h&&h.cam===alert.camera_id?null:h),12000);
+    toast({kind:'alert',title:alert.rule,body:`${alert.camera_id} · ${t12(alert.t)} · ${alert.confidence}% confidence`,ev:event});if(Rf.current.settings.sound)beep()},[toast]);
+  useEffect(()=>feed.subscribe(handleIncoming),[feed,handleIncoming]);
+  const fire=kind=>{const P=PRESETS[kind];const R=Rf.current;const cd=R.settings.cooldown*1000;
+    if(R.alerts.some(a=>a.rule===P.rule&&Date.now()-a.createdAt<cd)){toast({title:'Duplicate alert suppressed',body:`"${P.rule}" already fired within the ${R.settings.cooldown}s cooldown window.`});return null}
+    const n=R.alerts.length+1;const t=nowSec();const evId='EV-L'+Date.now()%100000;
+    const event={event_id:evId,camera_id:P.cam,t,ms:Math.floor(Math.random()*900),event_type:P.type,zone:P.zone||null,object_type:P.obj,color:P.color,confidence:P.conf,label:P.label,tags:[],track_id:P.track||null,bbox:P.bbox,evidence_url:null};
+    const q=R.sq.find(q=>q.active&&kind==='zone'&&/restricted/i.test(q.zone));
+    const alert={alert_id:'AL-'+String(n).padStart(3,'0'),rule:P.rule,camera_id:P.cam,t,severity:P.sev,confidence:P.conf,status:'New',day:'today',event_id:evId,createdAt:Date.now(),source:q?q.text:'Zone rule'};
+    if(CONFIG.USE_MOCK)feed.mockEmit({alert,event});
+    else{http('/alerts',{method:'POST',body:JSON.stringify({alert,event})}).catch(()=>{});setTimeout(()=>{if(!Rf.current.alerts.some(a=>a.alert_id===alert.alert_id))feed.emit({alert,event})},900)}
+    return event};
+  const setStatus=(id,s)=>{setAlerts(x=>x.map(a=>a.alert_id===id?{...a,status:s}:a));if(!CONFIG.USE_MOCK)http('/alerts/'+id,{method:'PATCH',body:JSON.stringify({status:s})}).catch(()=>{})};
+  const addSq=q=>setSq(x=>[...x,q]);const patchSq=(id,p)=>setSq(x=>x.map(q=>q.sq_id===id?{...q,...p}:q));const delSq=id=>setSq(x=>x.filter(q=>q.sq_id!==id));
+
+  const startDemo=async()=>{
+    if(demo)return;abort.current=false;setView('app');
+    const W=async ms=>{await sleep(ms);if(abort.current)throw new Error('stop')};
+    const step=(n,l)=>setDemo({n,l});
+    const type=async s=>{for(let i=1;i<=s.length;i++){setDraft(s.slice(0,i));await W(32)}await W(350)};
+    try{
+      setViewer(null);setCamModal(null);go('dashboard');setStreams(false);step(1,'Connecting 8 CCTV streams');await W(2000);setStreams(true);step(2,'Streams active. Simulated detections on every camera');await W(3000);
+      go('search');step(3,'Analyst asks a question');await type('Did a red car enter the main gate?');await ask('Did a red car enter the main gate?');await W(500);
+      let c=Rf.current.msgs.slice().reverse().find(m=>m.kind==='clarify'&&!m.data.selected);
+      if(c){step(3,'Clarify once: the system asks which camera is the Main Gate');await W(1800);pickClarify(c,'CAM-01');await W(1800);const s=Rf.current.msgs.slice().reverse().find(m=>m.kind==='saveprompt');confirmSave(s);await W(3500)}
+      step(4,'Evidence-grounded answer: camera, timestamp, detection');await W(3500);
+      step(5,'Follow-up question: cross-camera journey');await type('Where did it go?');await ask('Where did it go?');await W(4200);
+      step(6,'Create a standing query in plain language');await type('Alert me if a person enters the restricted zone.');await ask('Alert me if a person enters the restricted zone.');await W(3800);
+      step(7,'A simulated person enters the restricted zone');go('dashboard');await W(1500);const ev=fire('zone');await W(3500);
+      go('alerts');step(8,'Alert history updated. Opening the evidence');await W(2500);if(ev)setViewer({ev,auto:true});await W(6000);setViewer(null);
+      step(9,'Demo complete');await W(2500)
+    }catch(e){}
+    setDemo(null);setStreams(true);setDraft('')};
+  const stopDemo=()=>{abort.current=true};
+
+  const active=alerts.filter(a=>a.status!=='Resolved').length;
+  const online=cams.filter(c=>c.status==='online').length;
+  const priv={face:settings.blurFaces,plate:settings.blurPlates};
+  const A={go,cams,setCams,tick,clock,events,alerts,memory,setMemory,zones,setZones,sq,addSq,patchSq,delSq,settings,setSettings,msgs,draft,setDraft,busy,ask,pickClarify,confirmSave,toast,dismiss,toasts,hl,streams,focusEv,focusCam,trackId,setTrackId,priv,evOf,fire,setStatus,startDemo,
+    openEv:(ev,auto)=>ev&&setViewer({ev,auto:!!auto}),openCam:id=>setCamModal(id)};
+
+  if(view==='landing')return html`<${AppCtx.Provider} value=${A}><${Landing} onLaunch=${()=>setView('app')} onDemo=${()=>{setView('app');setTimeout(startDemo,300)}}/><//>`;
+  const P={dashboard:Dashboard,live:LiveCameras,search:SearchPage,investigation:Investigation,timeline:Timeline,tracking:Tracking,alerts:Alerts,zones:Zones,cameras:CamMgmt,memory:Memory,analytics:Analytics,settings:Settings}[page];
+  const privOn=['blurFaces','blurPlates','local','noCloud','autoDelete'].every(k=>settings[k]);
+  return html`<${AppCtx.Provider} value=${A}><div class="app">
+  <div class=${'overlay'+(nav?' on':'')} onClick=${()=>setNav(false)}></div>
+  <aside class=${'side'+(nav?' open':'')}><div class="brand"><div class="logo"><${Icon} n="eye" s=${19} sw=${2.2}/></div><div><b>VISIONGUARD AI</b><div class="label" style=${{letterSpacing:0}}>Intelligent Video Investigation</div></div></div>
+  <nav class="nav" aria-label="Main">${NAV.map(n=>html`<button key=${n[0]} class=${page===n[0]?'on':''} onClick=${()=>go(n[0])} aria-current=${page===n[0]?'page':undefined}><${Icon} n=${n[2]} s=${17}/>${n[1]}${n[0]==='alerts'&&active?html`<span class="badge">${active}</span>`:null}</button>`)}</nav>
+  <div class="sidefoot"><div class="who"><div class="avatar"><${Icon} n="user" s=${17}/></div><div><b>Security Analyst</b><div class="row" style=${{gap:6,fontSize:12,color:'var(--ok)'}}><i class="dot pulse"></i>AI Engine Online</div></div></div></div></aside>
+  <div class="main"><header class="top"><button class="btn icon menu-btn" aria-label="Open menu" onClick=${()=>setNav(true)}><${Icon} n="menu"/></button>
+  <span class="pill"><i class="dot pulse"></i>AI Engine: <b>Online</b></span><span class="pill hide-s">Cameras: <b>${online} Online / ${cams.length}</b></span><span class=${'pill'} style=${active?{borderColor:'rgba(255,90,77,.5)'}:null}>Active alerts: <b style=${{color:active?'var(--red)':undefined}}>${active}</b></span><span class="pill hide-s">System health: <b>98%</b></span><span class="pill hide-s" title=${live?"Events, alerts and memory are stored in the backend database":"No backend found: using the built-in mock service layer"}><i class=${'dot'+(live?'':' warn')}></i>${live?'Live backend':'Mock data'}</span>
+  <div class="sp"></div><span class=${'pill hide-s'}><${Icon} n="shield" s=${13}/>Privacy: <b>${privOn?'ON':'PARTIAL'}</b></span><button class="btn primary sm" onClick=${startDemo} disabled=${!!demo}><${Icon} n="play" s=${13}/>Start demo</button><button class="btn sm" onClick=${()=>setView('landing')}>Home</button></header>
+  <main><${P}/></main></div>
+  ${viewer?html`<${EvidenceViewer} key=${viewer.ev.event_id+viewer.auto} ev=${viewer.ev} auto=${viewer.auto} onClose=${()=>setViewer(null)}/>`:null}
+  ${camModal?html`<${CamModal} id=${camModal} onClose=${()=>setCamModal(null)}/>`:null}
+  <${Toasts}/>
+  ${demo?html`<div class="demobar" role="status"><span class="live"><i></i>DEMO</span><div><b style=${{fontSize:13}}>${demo.l}</b><div class="steps" style=${{marginTop:5}}>${[1,2,3,4,5,6,7,8,9].map(i=>html`<i key=${i} class=${i<=demo.n?'on':''}></i>`)}</div></div><button class="btn sm" onClick=${stopDemo}>Stop</button></div>`:null}</div><//>`;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
+</script></body></html>

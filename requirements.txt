@@ -1,0 +1,12 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+pydantic>=2.6
+# Optional: PostgreSQL driver (only if DATABASE_URL points to postgres)
+# psycopg2-binary>=2.9
+# Optional: real detection pipeline (backend/pipeline/process_video.py)
+# ultralytics>=8.2
+# opencv-python>=4.9
+# Optional: dataset generation / model training scripts
+# numpy>=1.26
+# scikit-learn>=1.4
